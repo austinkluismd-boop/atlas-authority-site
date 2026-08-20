@@ -1,0 +1,6 @@
+# atlas-authority.com — all crawlers welcome, AI crawlers included.
+# (Machine readability is the point.)
+User-agent: *
+Allow: /
+
+Sitemap: https://www.atlas-authority.com/sitemap.xml
