@@ -825,6 +825,24 @@ document.addEventListener("click", e => {
 function components(){ return FEED?.tenants?.components || []; }
 function compOf(slug){ return components().find(c => c.slug === slug) || null; }
 
+/* The Estate view is the composite, but a composite with no charts buried
+   the good stuff one click deep (owner feedback, 2026-08-24: "where are all
+   the beautiful graphs?!"). So the landing view also renders the FLAGSHIP
+   campus's ledger, baseline and trend — clearly labeled as the flagship's,
+   never averaged into the composite (provenance classes still never merge).
+   The flagship is derived from the registry, not hardcoded: the first live
+   campus. */
+function dataTenant(){
+  if(TENANT !== "estate") return TENANT;
+  const c = components().find(x => x.kind === "campus" && x.status === "live");
+  return c ? c.slug : TENANT;
+}
+function scopeLabel(){
+  if(TENANT !== "estate") return "";
+  const c = compOf(dataTenant());
+  return c ? (c.short || c.name) + " (flagship) · " : "";
+}
+
 function selectTenant(slug){
   TENANT = slug;
   const c = compOf(slug);
@@ -867,11 +885,11 @@ document.addEventListener("keydown", e => {
 function histFor(seriesId){
   if(!FEED?.history) return [];
   return FEED.history
-    .filter(h => h.tenant === TENANT && (ID_MAP[h.metric] || h.metric) === seriesId)
+    .filter(h => h.tenant === dataTenant() && (ID_MAP[h.metric] || h.metric) === seriesId)
     .map(h => ({t: h.t.slice(0,10), v: h.v, provenance: h.provenance, captured_at: h.t.slice(0,10)}));
 }
 
-function baselineTenant(){ return FEED?.baseline?.[TENANT] || null; }
+function baselineTenant(){ return FEED?.baseline?.[dataTenant()] || null; }
 
 /* latest value for a metric: prefer live history, fall back to baseline last point */
 function latest(seriesId){
@@ -903,19 +921,19 @@ function render(){
   const isCampus = !isEstate && !isPre;
   $("#s-estate").hidden = !isEstate;
   $("#s-prelaunch").hidden = !isPre;
-  $("#ledger").style.display = isCampus ? "" : "none";
-  $("#s-baseline").hidden = !isCampus;
+  $("#ledger").style.display = (isCampus || isEstate) ? "" : "none";
+  $("#s-baseline").hidden = !(isCampus || isEstate);
   $("#s-geo").hidden = isPre;
   const hasEngine = !!engineOf(TENANT) || isEstate;
   $("#s-todo").hidden = isPre;
-  $("#s-trend").hidden = !isCampus;
+  $("#s-trend").hidden = !(isCampus || isEstate);
   $("#s-metrics").hidden = !isCampus;
   $("#s-work").hidden = !(isCampus || isEstate);
   $("#s-activate").hidden = !isCampus;
   if(isEstate) renderEstate();
   if(isPre) renderPrelaunch(c);
-  if(isCampus){ renderLedger(); renderCharts(); renderTrend(); renderMetrics();
-                renderActivate(); }
+  if(isCampus){ renderMetrics(); renderActivate(); }
+  if(isCampus || isEstate){ renderLedger(); renderCharts(); renderTrend(); }
   renderFreshness();
   if(!isPre) renderTodo();
   if(isCampus || isEstate) renderWork();
@@ -1293,7 +1311,7 @@ function freshness(slug){
 
 function renderFreshness(){
   const host = $("#fresh-bar");
-  const f = freshness(TENANT);
+  const f = freshness(dataTenant());
   if(!f){ host.innerHTML = ""; host.hidden = true; return; }
   host.hidden = false;
   const bad = f.age != null && f.age > 7;
@@ -1327,11 +1345,11 @@ const PANEL_META = {
 
 function renderTrend(){
   const host = $("#trend-cards");
-  const rows = engTable(TENANT, "panel_daily");
-  $("#trend-note").textContent = engineNote(TENANT);
+  const rows = engTable(dataTenant(), "panel_daily");
+  $("#trend-note").textContent = scopeLabel() + engineNote(dataTenant());
   host.innerHTML = "";
   if(!rows.length){
-    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(TENANT) ||
+    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(dataTenant()) ||
       "No daily panel for this component yet.")}</div>`;
     return;
   }
@@ -1933,7 +1951,7 @@ function renderLedger(){
      nothing: a recorded absence beats a plausible invention. It is still
      `derived`, never MEASURED — a composite of measured parts is not itself
      a measurement, and the label says so. */
-  const ai = latestEngineObservation(TENANT, "authority_index");
+  const ai = latestEngineObservation(dataTenant(), "authority_index");
   rows.push(ai
     ? `<div><span class="k">Authority Index</span><span class="n">${FMT(ai.value)}</span>
         <span class="d">${classChip(ai.evidence_class)} <span class="chip date">${esc(ai.date)}</span></span>
@@ -1949,7 +1967,7 @@ function renderCharts(){
   const b = baselineTenant();
   const host = $("#charts"); host.innerHTML = "";
   if(!b){ host.innerHTML = `<div class="empty-state">No baseline index for this tenant.</div>`; return; }
-  $("#baseline-counts").textContent =
+  $("#baseline-counts").textContent = scopeLabel() +
     `${b.counts.series} series · ${b.counts.points} points · ${b.counts.gaps} recorded absences`;
   const gaps = [];
   (b.series||[]).forEach(s => (s.gaps||[]).forEach(g => gaps.push(g)));
