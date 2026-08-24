@@ -48,7 +48,7 @@ const thirdParty = requests.filter(u => !u.startsWith(origin));
 ok('zero third-party requests at view time', thirdParty.length===0, thirdParty.join(','));
 ok('ask panel invites sign-in',
    (await page.locator('#ask-panel').innerText()).includes('opens when you sign in'));
-ok('ask input disabled when signed out', await page.locator('#ask-q').isDisabled());
+ok('the chat is closed when signed out', await page.locator('#chat-q').isDisabled());
 
 // 2 — the magic link signs you in and disappears from the address bar
 requests.length = 0;
@@ -80,8 +80,10 @@ for (const slug of ['estate','tsa-cuzalina','osa','bella-roma','tsa-wellness']) 
 }
 await page.evaluate(() => selectTenant('tsa-cuzalina'));
 const askTxt = await page.locator('#ask-panel').innerText();
-ok('backend absence stated, no fake chat', askTxt.includes('not deployed yet'));
-ok('ask input still disabled without a backend', await page.locator('#ask-q').isDisabled());
+ok('backend absence stated, no fake chat',
+   /activation pending/i.test(askTxt) && /deploys with your credentials/i.test(askTxt),
+   askTxt.slice(0,100));
+ok('the chat stays closed without a backend', await page.locator('#chat-q').isDisabled());
 
 // 5 — selector badges the person's own practices
 await page.click('#tsel-btn');
