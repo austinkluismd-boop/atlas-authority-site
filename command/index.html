@@ -647,6 +647,13 @@ async function load(){
     $("#err").style.display = "none";
     render();
   }catch(e){
+    /* Once the gate (OPS-32) is live, cookies can expire mid-session: the
+       next feed fetch comes back 403. That is the door's job, not an error
+       banner's — send the person to re-present their card. */
+    if(String(e.message).includes("403")){
+      location.replace("/command/enter/");
+      return;
+    }
     const el = $("#err");
     el.style.display = "block";
     el.textContent = "Feed unavailable: " + e.message + " — showing nothing rather than something stale-invented.";

@@ -2,7 +2,7 @@
   "schema": "atlas-ops-queue-v1",
   "source": "practice-stack ops-tasks/tasks.json",
   "captured_at": "2026-08-24",
-  "note": "Human/vendor acts no software can perform — the launch queue's operational half, surfaced on mission-control so it cannot rot in a document. Statuses are DECLARATIONS by the operator (real state, not synthesized): open | in-progress | blocked | done. Regenerated 2026-08-24 from practice-stack ops-tasks/tasks.json (33 rows) in the same change set as the code it describes.",
+  "note": "Human/vendor acts no software can perform — the launch queue's operational half, surfaced on mission-control so it cannot rot in a document. Statuses are DECLARATIONS by the operator (real state, not synthesized): open | in-progress | blocked | done. Regenerated 2026-08-24 (gate build) from practice-stack ops-tasks/tasks.json (34 rows) in the same change set.",
   "tasks": [
     {
       "id": "OPS-1",
@@ -285,11 +285,11 @@
     },
     {
       "id": "OPS-32",
-      "title": "Decide whether atlas-authority.com/command/ itself should require a card. Today the page is noindexed + robots-excluded but publicly readable; the per-person card gates Ask Atlas, not the figures. Options: leave public (operating read-out), CloudFront signed-cookie gate, or move the console behind the concierge origin.",
+      "title": "Console gate (BUILT 2026-08-24, arm it): the signed-cookie gate for atlas-authority.com/command/ is coded, tested (18 signer/endpoint tests, 11 door checks, 7 end-to-end checks with real cookies in a real browser) and recorded (ops/aws/cloudfront-command-gate.json + deploy_command_gate.sh, dry-run verified). Owner arm steps, in order: (1) key ceremony per the record's _key_ceremony note; (2) create the private site bucket + OIDC role, set AWS_DEPLOY_ROLE/AWS_SITE_BUCKET repo variables so deploy-command-s3.yml lights up; (3) APPLY=1 ops/aws/deploy_command_gate.sh; (4) add the four ATLAS_CONCIERGE_CF_* vars to the concierge task and redeploy; (5) DNS cutover; (6) DISABLE GitHub Pages on atlas-authority-site — until 5 AND 6, the gate protects nothing and the record says so in bold.",
       "spec": "E9",
       "owner": "Austin",
       "due": "2026-09-06",
-      "status": "open",
+      "status": "in-progress",
       "priority": "P2"
     },
     {
@@ -300,6 +300,15 @@
       "due": "2026-08-26",
       "status": "open",
       "priority": "P1"
+    },
+    {
+      "id": "OPS-34",
+      "title": "atlas-connect: name and fix the rare suite flake (~1 run in 15; seen twice on 2026-08-24, never reproduced in 60+ consecutive runs). Leading hypothesis: the API test classes set ATLAS_API_RATE_LIMIT=3 in the PROCESS environment in setUpClass and restore it in tearDownClass, while RateLimiter reads that env var once at server construction — so a server built inside that window inherits a limit of 3 and a class making a 4th request from 127.0.0.1 gets a 429. Reproduction recipe: loop `cd atlas-connect && python3.13 -m unittest discover -s tests` capturing output per run until one reports FAILED, then read the named test. Fix direction (once named): pass per_minute explicitly to the test servers instead of via the shared process env, so no class can change another class's limit.",
+      "spec": "ADR-0023",
+      "owner": "next build session",
+      "due": "2026-09-07",
+      "status": "open",
+      "priority": "P2"
     }
   ]
 }
