@@ -610,7 +610,7 @@ let TENANT = "estate";   /* estate | tsa-cuzalina | osa | bella-roma | tsa-welln
 /* The concierge backend (Ask Atlas). null = staged: the panel explains what
    it will do and stays dark until the ops/aws/concierge service is deployed
    (docs/CLIENT_CONSOLE_ARCHITECTURE.md) and this points at its URL. */
-const CONFIG = { conciergeApi: null };
+const CONFIG = { conciergeApi: "https://api.atlas-authority.com" };
 
 /* history metric id -> baseline series id */
 const ID_MAP = {"semrush.organic.traffic_cost_usd": "semrush.organic.traffic_cost"};
