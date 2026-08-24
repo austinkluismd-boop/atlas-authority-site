@@ -179,6 +179,117 @@ tr:last-child td{border-bottom:0}
 .ask-you{background:var(--gold-wash);border:1px solid var(--gold);border-radius:8px;
   padding:11px 13px;margin:0 0 12px;font-size:12.5px;color:var(--ink2)}
 .ask-you b{color:var(--gold)}
+
+/* --- freshness bar --- */
+.freshbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:space-between;
+  background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--measured);
+  border-radius:8px;padding:10px 14px;margin:0 0 18px;font-size:12.5px;color:var(--ink2)}
+.freshbar.warn{border-left-color:var(--serious)}
+.freshbar b{color:var(--ink)}
+.freshbar a{color:var(--gold)}
+.freshbar .fresh-r{font-size:10.5px;color:var(--muted)}
+
+/* --- activation --- */
+.act-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.act-card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px 14px}
+.act-card.ready{border-left:3px solid var(--good)}
+.act-card.blocked{border-left:3px solid var(--warn)}
+.act-card h4{margin:0 0 4px;font-size:13.5px;color:var(--ink);font-weight:600;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.act-card p{margin:0 0 7px;font-size:12px;color:var(--ink2);line-height:1.55}
+.act-card .env{font-family:var(--mono);font-size:11px;color:var(--gold);
+  background:var(--gold-wash);border:1px solid var(--gold-dim);border-radius:5px;
+  padding:2px 7px;display:inline-block;margin:0 4px 4px 0}
+.act-card .lights{font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  border-top:1px solid var(--line-soft);padding-top:7px;margin-top:7px}
+
+/* --- to-do list --- */
+.todo{display:grid;gap:9px}
+.todo-row{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:start;
+  background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
+.todo-row .tno{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding-top:2px}
+.todo-row h4{margin:0 0 3px;font-size:13.5px;color:var(--ink);font-weight:600;line-height:1.4}
+.todo-row p{margin:0;font-size:12px;color:var(--ink2);line-height:1.5}
+.todo-row .why{color:var(--muted);font-size:11.5px;margin-top:4px;font-family:var(--mono)}
+.todo-row.p1{border-left:3px solid var(--serious)}
+.todo-row.p2{border-left:3px solid var(--warn)}
+.todo-row.p3{border-left:3px solid var(--line)}
+.todo-who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+
+/* --- metric catalog --- */
+.pill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:11px}
+.pill-card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 13px}
+.pill-card h4{margin:0 0 8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.pill-card h4 span{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0;text-transform:none}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline;
+  padding:4px 0;border-top:1px solid var(--line-soft);font-size:12px}
+.mrow:first-of-type{border-top:0}
+.mrow .mid{font-family:var(--mono);font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis}
+.mrow .mval{font-family:var(--mono);font-size:11.5px;color:var(--ink);white-space:nowrap}
+.mrow .mval.none{color:var(--muted)}
+.st{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 5px;border-radius:3px;
+  letter-spacing:.04em;text-transform:uppercase;vertical-align:middle}
+.st.live{background:var(--good-wash);color:var(--good)}
+.st.gated{background:var(--warn-wash);color:var(--warn)}
+.st.checkpoint{background:var(--estimate-wash);color:var(--estimate)}
+.st.manual{background:var(--demo-wash);color:var(--muted)}
+.st.structural_zero{background:var(--demo-wash);color:var(--muted)}
+.st.stale{background:var(--serious-wash);color:var(--serious)}
+
+/* --- interventions --- */
+.iv{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin:0 0 10px}
+.iv-h{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:0 0 7px}
+.iv-h b{font-size:13px;color:var(--ink);font-weight:600}
+.iv-h .iid{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.iv-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;line-height:1.55}
+.iv-g h5{margin:0 0 3px;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.iv-g p{margin:0;color:var(--ink2)}
+@media(max-width:720px){.iv-g{grid-template-columns:1fr}}
+
+/* --- chat (Cowork-shaped) --- */
+.chat{display:flex;flex-direction:column;height:min(62vh,560px);background:var(--sunk);
+  border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.chat-log{flex:1;overflow-y:auto;padding:16px 17px;display:flex;flex-direction:column;gap:13px}
+.msg{max-width:min(680px,88%);font-size:13.5px;line-height:1.62}
+.msg.me{align-self:flex-end;background:var(--gold-wash);border:1px solid var(--gold-dim);
+  color:var(--ink);border-radius:12px 12px 3px 12px;padding:9px 13px;white-space:pre-wrap}
+.msg.at{align-self:flex-start;color:var(--ink2)}
+.msg.at .who{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gold);margin:0 0 5px}
+.msg.at .body{white-space:pre-wrap}
+.msg.at .body b{color:var(--ink)}
+.msg .cursor{display:inline-block;width:7px;height:14px;background:var(--gold);
+  vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.tool-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;
+  color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:20px;
+  padding:3px 10px;margin:2px 4px 2px 0}
+.tool-chip.done{color:var(--measured);border-color:var(--measured)}
+.tool-chip.refused{color:var(--serious);border-color:var(--serious)}
+.prop-card{background:var(--panel);border:1px solid var(--gold-dim);border-radius:9px;
+  padding:10px 12px;margin:8px 0 0;font-size:12px;color:var(--ink2)}
+.prop-card b{color:var(--gold);font-family:var(--mono);font-size:11px}
+.prop-card ul{margin:6px 0 0;padding-left:17px}
+.chat-in{display:flex;gap:9px;align-items:flex-end;border-top:1px solid var(--line);
+  background:var(--panel);padding:11px 12px}
+.chat-in textarea{flex:1;resize:none;min-height:40px;max-height:150px;background:var(--sunk);
+  color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  font-family:var(--body);font-size:13.5px;line-height:1.5}
+.chat-in textarea:focus{outline:none;border-color:var(--gold)}
+.chat-in textarea:disabled{color:var(--muted)}
+.chat-in button{background:var(--gold);color:#12110F;border:0;border-radius:8px;
+  padding:11px 18px;font-weight:600;font-size:13px;cursor:pointer;font-family:var(--body)}
+.chat-in button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.chat-starters{display:flex;gap:7px;flex-wrap:wrap;padding:0 12px 11px;background:var(--panel)}
+.chat-starters button{background:transparent;border:1px solid var(--line);color:var(--ink2);
+  border-radius:20px;padding:6px 12px;font-size:11.5px;cursor:pointer;font-family:var(--body)}
+.chat-starters button:hover{border-color:var(--gold);color:var(--gold)}
+.chat-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-family:var(--mono);
+  font-size:10.5px;color:var(--muted);padding:7px 12px;border-top:1px solid var(--line-soft);
+  background:var(--panel)}
+.chat-meta select{background:var(--sunk);color:var(--ink2);border:1px solid var(--line);
+  border-radius:5px;padding:3px 7px;font-family:var(--mono);font-size:10.5px}
 .tsel-btn{display:flex;align-items:center;gap:10px;background:var(--panel);
   border:1px solid var(--gold-dim);border-radius:3px;padding:9px 14px;cursor:pointer;
   font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink)}
@@ -330,6 +441,18 @@ tr:last-child td{border-bottom:0}
 
 <div class="ledger" id="ledger" aria-label="Headline figures"></div>
 
+<div class="freshbar" id="fresh-bar" hidden></div>
+
+<section id="s-todo" hidden>
+  <div class="sec-h">
+    <h2>Your list</h2>
+    <span class="sub">What actually needs doing, derived from the engine's own gates and the ops board — never invented.</span>
+    <span class="mono" id="todo-note"></span>
+  </div>
+  <div class="todo-who" id="todo-who"></div>
+  <div class="todo" id="todo-list"></div>
+</section>
+
 <section id="s-baseline">
   <div class="sec-h">
     <h2>Baseline → Now</h2>
@@ -352,6 +475,42 @@ tr:last-child td{border-bottom:0}
     <div class="card" id="engine-obs" style="grid-column:1 / -1"></div>
   </div>
   <div class="tbl-wrap" style="margin-top:16px"><table id="gates-tbl"></table></div>
+</section>
+
+<section id="s-trend" hidden>
+  <div class="sec-h">
+    <h2>Measured trend</h2>
+    <span class="sub">The engine's daily panel — every point a real observation with its own capture date. Blanks are breaks in the line, never zeros.</span>
+    <span class="mono" id="trend-note"></span>
+  </div>
+  <div class="grid" id="trend-cards"></div>
+</section>
+
+<section id="s-metrics" hidden>
+  <div class="sec-h">
+    <h2>Everything the engine tracks</h2>
+    <span class="sub">The full metric dictionary by pillar, with what is live, what is gated and on what, and when each was last seen.</span>
+    <span class="mono" id="metrics-note"></span>
+  </div>
+  <div class="pill-grid" id="metrics-grid"></div>
+</section>
+
+<section id="s-work" hidden>
+  <div class="sec-h">
+    <h2>What we did, and what it did</h2>
+    <span class="sub">The intervention ledger: what was predicted before the work, what was observed after, and how confidently the two can be linked.</span>
+    <span class="mono" id="work-note"></span>
+  </div>
+  <div id="work-list"></div>
+</section>
+
+<section id="s-activate" hidden>
+  <div class="sec-h">
+    <h2>What to turn on</h2>
+    <span class="sub">Every source the engine is coded for, and exactly what stands between it and live data. Nothing here is a guess — each row is the engine's own gate.</span>
+    <span class="mono" id="act-note"></span>
+  </div>
+  <div class="act-grid" id="act-grid"></div>
 </section>
 
 <section id="s-pri">
@@ -421,6 +580,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 let FEED = null;
+let ENGINE = null;      /* data/engine-export.json — the engine's own output */
 let TENANT = "estate";   /* estate | tsa-cuzalina | osa | bella-roma | tsa-wellness */
 
 /* The concierge backend (Ask Atlas). null = staged: the panel explains what
@@ -447,9 +607,19 @@ setInterval(clock, 1000); clock();
 
 async function load(){
   try{
+    /* Two same-origin files, never merged: feed.json is the hourly live
+       surface, data/engine-export.json is the engine's committed output
+       (generated by practice-stack mission-control/tools/export_engine_console.py).
+       Keeping them separate means neither can silently claim the other's
+       provenance or vintage. The engine file is optional — its absence is an
+       empty state with a reason, not an error. */
     const r = await fetch("feed.json", {cache:"no-store"});
     if(!r.ok) throw new Error("feed.json HTTP " + r.status);
     FEED = await r.json();
+    try{
+      const e = await fetch("data/engine-export.json", {cache:"no-store"});
+      ENGINE = e.ok ? await e.json() : null;
+    }catch(_){ ENGINE = null; }
     $("#err").style.display = "none";
     render();
   }catch(e){
@@ -705,9 +875,19 @@ function render(){
   $("#ledger").style.display = isCampus ? "" : "none";
   $("#s-baseline").hidden = !isCampus;
   $("#s-geo").hidden = isPre;
+  const hasEngine = !!engineOf(TENANT) || isEstate;
+  $("#s-todo").hidden = isPre;
+  $("#s-trend").hidden = !isCampus;
+  $("#s-metrics").hidden = !isCampus;
+  $("#s-work").hidden = !(isCampus || isEstate);
+  $("#s-activate").hidden = !isCampus;
   if(isEstate) renderEstate();
   if(isPre) renderPrelaunch(c);
-  if(isCampus){ renderLedger(); renderCharts(); }
+  if(isCampus){ renderLedger(); renderCharts(); renderTrend(); renderMetrics();
+                renderActivate(); }
+  renderFreshness();
+  if(!isPre) renderTodo();
+  if(isCampus || isEstate) renderWork();
   renderEngine(); renderStudio(); renderAsk(); renderPriorities(); renderOps(); renderGeo();
 }
 
@@ -795,56 +975,642 @@ function renderStudio(){
     : `<div class="empty-state">No suggestions on file for this component yet — its baseline freeze comes first.</div>`;
 }
 
-/* ---------- ask atlas (concierge) ----------
+/* ---------- what to turn on ----------
+   The engine already knows what it cannot see and why: every source carries a
+   status, a gate, the number of variables it would light up, and the unlock
+   action in the engine's own words. This panel is that table, rendered — plus
+   the environment variable each adapter reads, so "configure DataForSEO"
+   becomes a concrete instruction instead of a project.
+
+   The env-var column is the ONLY thing added here, and it is a lookup, not a
+   guess: an unknown source shows no variable rather than a plausible one. */
+const SOURCE_ENV = {
+  crux:        ["CRUX_PSI_API_KEY"],
+  psi:         ["CRUX_PSI_API_KEY"],
+  semrush:     ["SEMRUSH_API_KEY_CLASSIC", "SEMRUSH_PAT"],
+  dataforseo:  ["DATAFORSEO_LOGIN", "DATAFORSEO_PASSWORD"],
+  geogrid:     ["DATAFORSEO_LOGIN", "DATAFORSEO_PASSWORD"],
+  matomo:      ["MATOMO_URL", "MATOMO_SITE_ID", "MATOMO_TOKEN"],
+  uptime:      ["UPTIMEROBOT_API_KEY"],
+  social:      ["TIKTOK_CLIENT_KEY", "TIKTOK_CLIENT_SECRET", "YOUTUBE_API_KEY"],
+  calls:       ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN"],
+};
+const OPEN_STATES = ["gated", "manual", "checkpoint"];
+
+function renderActivate(){
+  const host = $("#act-grid");
+  const fresh = engTable(TENANT, "freshness");
+  const cov = engTable(TENANT, "coverage");
+  if(!fresh.length){
+    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(TENANT) ||
+      "No source table for this component yet.")}</div>`;
+    $("#act-note").textContent = "";
+    return;
+  }
+  const waiting = {};
+  for(const c of cov){
+    if(c.status === "live") continue;
+    (waiting[c.source] = waiting[c.source] || []).push(c.metric_id);
+  }
+  const rows = fresh.slice().sort((a, b) => {
+    const rank = r => r.status === "gated" ? 0 : r.status === "manual" ? 1
+                    : r.status === "checkpoint" ? 2 : 3;
+    return rank(a) - rank(b) || Number(b.variables || 0) - Number(a.variables || 0);
+  });
+  const open = rows.filter(r => OPEN_STATES.includes(r.status));
+  const vars = open.reduce((a, r) => a + Number(r.variables || 0), 0);
+  $("#act-note").textContent =
+    `${open.length} source(s) not live · ${vars} variables waiting`;
+
+  host.innerHTML = rows.map(r => {
+    const live = r.status === "live";
+    const permanent = r.status === "structural_zero";
+    const envs = SOURCE_ENV[r.source] || [];
+    const mine = (waiting[r.source] || []);
+    return `<div class="act-card ${live ? "ready" : "blocked"}">
+      <h4>${esc(r.source)}
+        <span class="st ${esc(r.status || "manual")}">${esc(r.status || "—")}</span>
+        ${r.gate ? `<span class="chip gap">${esc(r.gate)}</span>` : ""}
+        ${r.variables ? `<span class="chip dim">${esc(r.variables)} variable${r.variables === "1" ? "" : "s"}</span>` : ""}
+      </h4>
+      <p>${live
+          ? `Live. Last observation <b>${esc(r.last_observation || "—")}</b>${
+              r.last_observation ? ` (${esc(ageWords(r.last_observation))})` : ""}.`
+          : permanent
+            ? `<b>Deliberately off, permanently.</b> ${esc(r.unlock_action || "")}`
+            : (r.unlock_action ? esc(r.unlock_action)
+               : r.status === "checkpoint"
+                 ? `On file from a manual checkpoint${r.last_observation ? ` (${esc(r.last_observation)}, ${esc(ageWords(r.last_observation))})` : ""} — accurate as of that capture, but it does not refresh itself. A key makes it continuous.`
+                 : r.status === "manual"
+                   ? `Entered by hand today${r.last_observation ? ` (last ${esc(r.last_observation)})` : ""}. It is real, and it only moves when someone enters it.`
+                   : `Gated on ${esc(r.gate || "an unrecorded gate")}, with no unlock action written down. That gap is itself the action: ask the engine owner what this gate needs, then record it.`)}</p>
+      ${(!live && !permanent && envs.length)
+        ? envs.map(e => `<span class="env">${esc(e)}</span>`).join("")
+        : ""}
+      ${mine.length ? `<div class="lights">waiting on it: ${esc(mine.slice(0,8).join(", "))}${mine.length > 8 ? ` +${mine.length - 8} more` : ""}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ---------- your list ----------
+   Derived, never invented. Three real sources, each row carrying the evidence
+   it came from so a reader can check it:
+     1. the engine's freshness table — `unlock_action` is literally "what the
+        engine cannot see until someone does this"
+     2. coverage rows that are gated, and rows going stale against their own
+        declared cadence
+     3. the ops board (practice-stack ops-tasks/tasks.json, mirrored hourly)
+   Lanes are keyword-derived from the row's own words and shown on the row, so
+   a misfiling is visible rather than hidden. */
+const LANE_RE = {
+  social: /(social|instagram|facebook|tiktok|youtube|oauth|profile|gbp|google business|apple business|bing places|listing|post)/i,
+  content: /(content|copy|page|blog|article|photo|image|write|publish|corpus|review of clinical|attestation)/i
+};
+function laneOf(text){
+  const t = String(text || "");
+  const lanes = Object.keys(LANE_RE).filter(k => LANE_RE[k].test(t));
+  return lanes.length ? lanes : ["ops"];
+}
+const ROLE_LANES = {
+  principal: null,                 /* null = every lane */
+  marketing: ["social", "content"],
+  editor:    ["content"],
+  viewer:    null                  /* sees everything, changes nothing */
+};
+
+function todoItems(slug){
+  const out = [];
+  const cov = engTable(slug, "coverage");
+  const fresh = engTable(slug, "freshness");
+
+  for(const f of fresh){
+    if(!f.unlock_action) continue;
+    out.push({
+      p: 1, lanes: laneOf(f.unlock_action + " " + (f.source || "")),
+      title: f.unlock_action,
+      body: `The engine cannot see ${esc(f.variables || "?")} variable(s) from ${esc(f.source || "this source")} until this happens.`,
+      why: `engine freshness · source ${f.source || "?"} · status ${f.status || "?"}${f.gate ? " · gate " + f.gate : ""}`,
+      src: "engine"
+    });
+  }
+  const gated = cov.filter(c => c.status === "gated" && c.gate);
+  const byGate = {};
+  for(const g of gated) (byGate[g.gate] = byGate[g.gate] || []).push(g.metric_id);
+  for(const gate of Object.keys(byGate)){
+    if(out.some(o => (o.why || "").includes("gate " + gate))) continue;
+    out.push({
+      p: 2, lanes: laneOf(gate),
+      title: `Unblock ${gate}`,
+      body: `${byGate[gate].length} metric(s) are gated on it: ${byGate[gate].slice(0,6).join(", ")}${byGate[gate].length>6?", …":""}.`,
+      why: `engine coverage · gate ${gate}`,
+      src: "engine"
+    });
+  }
+  for(const c of cov){
+    if(!/STALE/i.test(c.state || "")) continue;
+    out.push({
+      p: 2, lanes: laneOf(c.metric_id + " " + (c.source || "")),
+      title: `${c.metric_id} has gone stale`,
+      body: esc(c.state),
+      why: `engine coverage · cadence ${c.cadence || "?"} · last ${c.last || "never"}`,
+      src: "engine"
+    });
+  }
+  const tasks = (FEED && FEED.ops_queue && FEED.ops_queue.tasks) || [];
+  const today = new Date();
+  for(const t of tasks){
+    if(String(t.status || "").toLowerCase() === "done") continue;
+    const over = t.due ? Math.floor((today - new Date(t.due)) / 864e5) : null;
+    out.push({
+      p: t.priority === "P0" ? 1 : t.priority === "P1" ? 2 : 3,
+      lanes: laneOf(t.title), owner: t.owner || "",
+      title: t.title.length > 190 ? t.title.slice(0, 190) + "…" : t.title,
+      body: `${t.owner ? "Owner: " + esc(t.owner) + " · " : ""}${t.priority || ""}${t.due ? " · due " + esc(t.due) : ""}${over > 0 ? ` · <b style="color:var(--serious)">${over} days overdue</b>` : ""}`,
+      why: `ops board ${t.id}${t.spec ? " · spec " + t.spec : ""} · ${t.status || "open"}`,
+      src: "ops"
+    });
+  }
+  return out.sort((a, b) => a.p - b.p);
+}
+
+/* "Owner: Austin" on a row Sam is reading means it is not hers. The ops board
+   writes owners as free text ("Austin", "Dr. C", "Austin + Dr. C"), so match
+   on the person's own name parts and say plainly which rows are waiting on
+   someone else rather than filing them all under "your list". */
+function ownedByMe(owner){
+  if(!SESSION || !owner) return null;                 /* null = unassigned */
+  const name = String(SESSION.name || SESSION.id).toLowerCase();
+  const parts = name.split(/[^a-z]+/).filter(w => w.length > 2 && w !== "dr");
+  const o = String(owner).toLowerCase();
+  if(parts.some(w => o.includes(w))) return true;
+  const surname = parts[parts.length - 1];
+  if(surname && o.includes("dr") && name.includes("dr") &&
+     o.includes(surname.slice(0, 2))) return true;
+  return false;
+}
+
+function renderTodo(){
+  const host = $("#todo-list"), who = $("#todo-who");
+  const role = roleFor(TENANT);
+  const allowed = SESSION && role ? ROLE_LANES[role] : null;
+  const items = todoItems(TENANT === "estate" ? "tsa-cuzalina" : TENANT)
+    .filter(i => !allowed || i.lanes.some(l => allowed.includes(l)));
+  const scope = TENANT === "estate" ? "the estate" : ((compOf(TENANT)||{}).name || TENANT);
+
+  who.innerHTML = SESSION
+    ? `<span class="chip ok">${esc(SESSION.name || SESSION.id)}</span>
+       <span class="chip dim">${esc(role || "—")}</span>
+       <span class="chip dim">${esc(scope)}</span>
+       ${allowed ? `<span class="mono" style="color:var(--muted)">filtered to ${allowed.join(" + ")} — sign in as a principal to see every lane</span>`
+                 : `<span class="mono" style="color:var(--muted)">every lane</span>`}`
+    : `<span class="chip wait">not signed in</span>
+       <span class="mono" style="color:var(--muted)">showing every lane; sign in and this list narrows to yours</span>`;
+
+  $("#todo-note").textContent = `${items.length} open · engine gates + ops board`;
+  if(!items.length){
+    host.innerHTML = `<div class="empty-state">Nothing open in your lane right now.</div>`;
+    return;
+  }
+  const row = (i, n) => `
+    <div class="todo-row p${i.p}">
+      <span class="tno">${String(n + 1).padStart(2, "0")}</span>
+      <div>
+        <h4>${esc(i.title)}</h4>
+        <p>${i.body}</p>
+        <p class="why">${esc(i.why)}</p>
+      </div>
+      <span class="chip ${i.src === "engine" ? "measured" : "dim"}">${i.lanes.join("·")}</span>
+    </div>`;
+  if(!SESSION){ host.innerHTML = items.map(row).join(""); return; }
+  const mine = items.filter(i => ownedByMe(i.owner) !== false);
+  const theirs = items.filter(i => ownedByMe(i.owner) === false);
+  host.innerHTML =
+    (mine.length ? mine.map(row).join("")
+                 : `<div class="empty-state">Nothing in your lane is assigned to you right now.</div>`) +
+    (theirs.length ? `<p class="mono" style="color:var(--muted);font-size:11px;margin:16px 0 8px">
+        WAITING ON SOMEONE ELSE — ${theirs.length} row(s) in your lane are assigned to another person.
+        Shown so you know what is coming, not because they are yours.</p>` +
+        theirs.map((i, n) => row(i, n + mine.length)).join("")
+      : "");
+}
+
+/* ---------- the engine surface: catalog, trend, work log ----------
+   Everything here is the engine's own export, rendered without arithmetic.
+   The console never averages across evidence classes, never fills a blank,
+   and never renders a figure whose provenance it cannot name. */
+
+function engineOf(slug){
+  return (ENGINE && ENGINE.tenants && ENGINE.tenants[slug]) || null;
+}
+function engTable(slug, name){
+  const b = engineOf(slug);
+  return (b && b.tables && b.tables[name]) || [];
+}
+const CLASS_CHIP = {measurement:"measured", estimate:"estimate", lab:"estimate",
+                    derived:"demo", demo:"demo"};
+function classChip(cls){
+  const k = CLASS_CHIP[cls] || "gap";
+  return `<span class="chip ${k}">${esc(cls || "unclassified")}</span>`;
+}
+function daysSince(d){
+  if(!d) return null;
+  const t = +new Date(d);
+  return isFinite(t) ? Math.floor((Date.now() - t) / 864e5) : null;
+}
+function engineNote(slug){
+  const src = (ENGINE && ENGINE.source) || {};
+  const b = engineOf(slug);
+  if(!ENGINE) return "engine export not published to this console yet";
+  if(!b) return `no engine block for ${slug}`;
+  const n = Object.values(b.counts || {}).reduce((a, x) => a + x, 0);
+  return `${n} engine rows · export ${(src.export_generated_at || "").slice(0,10)} · ledger ${String(src.ledger_content_hash || "").slice(0,8)}`;
+}
+
+function latestEngineObservation(slug, metricId){
+  let best = null;
+  for(const o of engTable(slug, "observations")){
+    if(o.metric_id !== metricId) continue;
+    if(!best || String(o.date) > String(best.date)) best = o;
+  }
+  return best;
+}
+
+function ageWords(dateStr){
+  const d = daysSince(dateStr);
+  if(d == null) return "undated";
+  if(d <= 0) return "today";
+  if(d === 1) return "1 day old";
+  return `${d} days old`;
+}
+
+/* How fresh is any of this, really? Answered out loud, per component, before
+   anyone reads a number off the page. Nothing here is refreshed by looking at
+   it: an old figure stays old and says so. */
+function freshness(slug){
+  const obs = engTable(slug, "observations");
+  const cov = engTable(slug, "coverage");
+  if(!obs.length && !cov.length) return null;
+  const dates = obs.map(o => o.date).filter(Boolean).sort();
+  const newest = dates[dates.length - 1] || null;
+  const stale = cov.filter(c => /STALE/i.test(c.state || ""));
+  const gated = cov.filter(c => c.status === "gated");
+  const live = cov.filter(c => c.status === "live");
+  return {newest, age: daysSince(newest), stale: stale.length,
+          gated: gated.length, live: live.length, metrics: cov.length,
+          observations: obs.length};
+}
+
+function renderFreshness(){
+  const host = $("#fresh-bar");
+  const f = freshness(TENANT);
+  if(!f){ host.innerHTML = ""; host.hidden = true; return; }
+  host.hidden = false;
+  const bad = f.age != null && f.age > 7;
+  host.className = "freshbar" + (bad ? " warn" : "");
+  const src = (ENGINE && ENGINE.source) || {};
+  host.innerHTML = `
+    <div class="fresh-l">
+      <b>${bad ? "These figures are not current." : "Figures current."}</b>
+      Newest observation <b>${esc(f.newest || "—")}</b> (${esc(ageWords(f.newest))}).
+      ${f.stale ? `<b>${f.stale}</b> metric${f.stale===1?"":"s"} past their own cadence.` : ""}
+      ${f.gated ? `<b>${f.gated}</b> more can't be seen at all until a credential lands — see <a href="#s-activate">what to turn on</a>.` : ""}
+    </div>
+    <div class="fresh-r mono">
+      ${f.live}/${f.metrics} live · ${f.observations} observations ·
+      engine export ${esc((src.export_generated_at || "").slice(0,10))} ·
+      ledger ${esc(String(src.ledger_content_hash || "").slice(0,8))}
+    </div>`;
+}
+
+/* --- measured trend, straight off the engine's daily panel --- */
+const PANEL_META = {
+  crux_lcp_p75:  {label:"Largest Contentful Paint (p75)", unit:"ms", good:"down", cls:"measurement"},
+  crux_inp_p75:  {label:"Interaction to Next Paint (p75)", unit:"ms", good:"down", cls:"measurement"},
+  crux_cls_p75:  {label:"Cumulative Layout Shift (p75)", unit:"", good:"down", cls:"measurement"},
+  psi_performance_score: {label:"PageSpeed performance", unit:"", good:"up", cls:"lab"},
+  gbp_rating:    {label:"Google rating", unit:"", good:"up", cls:"measurement"},
+  gbp_review_count: {label:"Google reviews", unit:"", good:"up", cls:"measurement"},
+  robots_ai_crawlers_blocked: {label:"AI crawlers blocked by robots.txt", unit:"", good:"down", cls:"measurement"},
+  authority_index: {label:"Authority Index", unit:"", good:"up", cls:"derived"}
+};
+
+function renderTrend(){
+  const host = $("#trend-cards");
+  const rows = engTable(TENANT, "panel_daily");
+  $("#trend-note").textContent = engineNote(TENANT);
+  host.innerHTML = "";
+  if(!rows.length){
+    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(TENANT) ||
+      "No daily panel for this component yet.")}</div>`;
+    return;
+  }
+  const cols = Object.keys(rows[0]).filter(k => k !== "date");
+  let drawn = 0;
+  for(const col of cols){
+    const pts = rows.map(r => ({t:r.date, v:r[col]})).filter(p => p.v != null);
+    if(!pts.length) continue;
+    drawn++;
+    const meta = Object.assign({label:col, unit:"", good:"up", cls:"measurement"},
+                               PANEL_META[col] || {}, {id:col});
+    const first = pts[0], last = pts[pts.length - 1];
+    const d = last.v - first.v;
+    const better = (meta.good === "up") === (d > 0);
+    const card = document.createElement("div");
+    card.className = "card";
+    const single = pts.length === 1;
+    card.innerHTML = `
+      <div class="row1"><h3>${esc(meta.label)}</h3>${classChip(meta.cls)}</div>
+      <div class="meta"><span>${esc(meta.id || col)}</span>
+        <span>${pts.length} observation${single ? "" : "s"}</span>
+        <span>${esc(first.t)}${single ? "" : " → " + esc(last.t)}</span></div>
+      <div class="row1" style="margin:2px 0 6px">
+        <b class="num" style="font-size:22px;font-family:var(--mono);color:var(--ink)">${FMT(last.v, meta.unit)}</b>
+        ${single ? `<span class="mono" style="color:var(--muted)">one observation — a point, not yet a trend</span>`
+          : (d === 0 ? `<span class="d delta-flat">— flat since first observation</span>`
+            : `<span class="d ${better ? "delta-up" : "delta-down"}">${d > 0 ? "+" : "−"}${FMT(Math.abs(d), meta.unit)} since ${esc(first.t)}</span>`)}
+      </div>
+      ${single ? "" : "<canvas></canvas>"}`;
+    host.appendChild(card);
+    if(!single) drawPanelSeries(card.querySelector("canvas"), pts, meta);
+  }
+  if(!drawn) host.innerHTML = `<div class="empty-state">The daily panel exists but every cell in it is empty — recorded absences, not zeros.</div>`;
+}
+
+function drawPanelSeries(cv, pts, meta){
+  requestAnimationFrame(() => {
+    const {ctx, w, h} = setupCanvas(cv);
+    const P = {l:10, r:10, t:12, b:20};
+    const ts = pts.map(p => +new Date(p.t));
+    let t0 = Math.min(...ts), t1 = Math.max(...ts);
+    if(t0 === t1){ t0 -= 15*864e5; t1 += 15*864e5; }
+    const vs = pts.map(p => p.v);
+    let v0 = Math.min(...vs), v1 = Math.max(...vs);
+    if(v0 === v1){ v0 = v0 === 0 ? -1 : v0*0.9; v1 = v1 === 0 ? 1 : v1*1.1; }
+    const pad = (v1 - v0) * 0.14; v0 -= pad; v1 += pad;
+    const X = t => P.l + (t - t0)/(t1 - t0) * (w - P.l - P.r);
+    const Y = v => h - P.b - (v - v0)/(v1 - v0) * (h - P.t - P.b);
+    const measured = meta.cls === "measurement";
+    const stroke = measured ? "#3FC9B7" : (meta.cls === "derived" ? "#8E8B81" : "#D99C55");
+    ctx.strokeStyle = "rgba(255,255,255,.05)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(P.l, h - P.b); ctx.lineTo(w - P.r, h - P.b); ctx.stroke();
+    /* A gap in the panel BREAKS the line — it is never bridged. Two points
+       more than 45 days apart are not a trend, they are two points. */
+    const MAXGAP = 45 * 864e5;
+    ctx.strokeStyle = stroke; ctx.lineWidth = 1.7;
+    if(!measured) ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    let pen = false;
+    pts.forEach((p, i) => {
+      const t = +new Date(p.t);
+      if(i && (t - (+new Date(pts[i-1].t))) > MAXGAP) pen = false;
+      if(!pen){ ctx.moveTo(X(t), Y(p.v)); pen = true; } else ctx.lineTo(X(t), Y(p.v));
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+    pts.forEach(p => {
+      const x = X(+new Date(p.t)), y = Y(p.v);
+      ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7);
+      if(measured){ ctx.fillStyle = stroke; ctx.fill(); }
+      else { ctx.strokeStyle = stroke; ctx.lineWidth = 1.4; ctx.stroke(); }
+    });
+  });
+}
+
+function engineAbsence(slug){
+  const b = engineOf(slug);
+  if(!b || !b.absences || !b.absences.length) return "";
+  return b.absences.map(a => a.why).join(" ");
+}
+
+/* --- the whole metric dictionary, by pillar --- */
+function renderMetrics(){
+  const host = $("#metrics-grid");
+  const cov = engTable(TENANT, "coverage");
+  const dict = engTable(TENANT, "dictionary");
+  const obs = engTable(TENANT, "observations");
+  $("#metrics-note").textContent = engineNote(TENANT);
+  if(!cov.length && !dict.length){
+    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(TENANT) ||
+      "The engine tracks nothing for this component yet.")}</div>`;
+    return;
+  }
+  const lastVal = {};
+  for(const o of obs){
+    const k = o.metric_id;
+    if(!lastVal[k] || o.date > lastVal[k].date) lastVal[k] = o;
+  }
+  const byId = {};
+  for(const d of dict) byId[d.id] = d;
+  const pillars = {};
+  for(const c of cov){
+    (pillars[c.pillar || "other"] = pillars[c.pillar || "other"] || []).push(c);
+  }
+  const order = Object.keys(pillars).sort((a,b) => pillars[b].length - pillars[a].length);
+  host.innerHTML = order.map(pl => {
+    const rows = pillars[pl].slice().sort((a,b) =>
+      (a.status === b.status ? String(a.metric_id).localeCompare(b.metric_id)
+                             : (a.status === "live" ? -1 : b.status === "live" ? 1 : 0)));
+    const live = rows.filter(r => r.status === "live").length;
+    return `<div class="pill-card">
+      <h4>${esc(pl)}<span>${live}/${rows.length} live</span></h4>
+      ${rows.map(r => {
+        const o = lastVal[r.metric_id];
+        const d = byId[r.metric_id] || {};
+        const stale = /STALE/i.test(r.state || "");
+        const val = o ? FMT(o.value, d.unit || "") : "—";
+        const when = o ? o.date : (r.gate ? "gated: " + r.gate : "no observation");
+        return `<div class="mrow" title="${esc((d.note || r.note || "") + (r.state ? " · " + r.state : ""))}">
+          <span class="mid">${esc(r.metric_id)}
+            <span class="st ${esc(stale ? "stale" : (r.status || "manual"))}">${esc(stale ? "stale" : (r.status || "—"))}</span></span>
+          <span class="mval ${o ? "" : "none"}">${esc(val)} <span style="color:var(--muted)">${esc(when)}</span></span>
+        </div>`; }).join("")}
+    </div>`;
+  }).join("");
+}
+
+/* --- the intervention ledger: predicted vs observed --- */
+function renderWork(){
+  const host = $("#work-list");
+  const mine = engTable(TENANT, "interventions");
+  const shared = (ENGINE && ENGINE.unattributed && ENGINE.unattributed.interventions) || null;
+  const rows = TENANT === "estate"
+    ? (shared ? shared.rows : []).concat(...Object.keys((ENGINE||{}).tenants||{}).map(k => engTable(k, "interventions")))
+    : mine;
+  $("#work-note").textContent = engineNote(TENANT);
+  if(!rows.length){
+    host.innerHTML = `<div class="empty-state">${esc(engineAbsence(TENANT) ||
+      "No interventions recorded against this component.")}</div>`;
+    return;
+  }
+  const sorted = rows.slice().sort((a,b) => String(b.date||"").localeCompare(String(a.date||"")));
+  host.innerHTML = sorted.map(iv => `
+    <div class="iv">
+      <div class="iv-h">
+        <span class="iid">${esc(iv.id || "")}</span>
+        <b>${esc(iv.intervention || iv.summary || iv.type || "intervention")}</b>
+        <span class="chip ${iv.status === "completed" ? "ok" : "wait"}">${esc(iv.status || "—")}</span>
+        <span class="chip dim">${esc(iv.date || "undated")}</span>
+        ${iv.attribution_confidence ? `<span class="chip dim">attribution: ${esc(iv.attribution_confidence)}</span>` : ""}
+        ${iv.tenant_id ? "" : `<span class="chip gap">no tenant recorded</span>`}
+      </div>
+      ${iv.problem ? `<p style="margin:0 0 8px;font-size:12px;color:var(--muted)">${esc(iv.problem)}</p>` : ""}
+      <div class="iv-g">
+        <div><h5>predicted, before</h5><p>${esc(iv.predicted_effect || "— nothing was predicted in writing")}</p></div>
+        <div><h5>observed, after</h5><p>${esc(iv.observed_effect || "— not yet observed")}</p></div>
+      </div>
+    </div>`).join("") +
+    (TENANT === "estate" && shared ? `<p class="mono" style="color:var(--muted);font-size:11px;margin:10px 0 0">${esc(shared.why)}</p>` : "");
+}
+
+/* ---------- Ask Atlas: a conversation, not a search box ----------
+   The shape a person already knows: a thread, a box, Enter to send. It streams
+   because watching work happen is the difference between "is this broken?" and
+   "it's reading my numbers".
+
    Three honest states, never a fourth:
-     • nobody signed in      -> say so, and how to sign in
-     • signed in, no backend -> say exactly that; never simulate a chat
-     • signed in + backend   -> a live input bound to THEIR token for THIS
-                                component
-   The only request this panel ever makes is to the estate's own concierge
-   API, in response to a person clicking Ask. Never on load. */
+     • signed out       -> say how to sign in
+     • no key here      -> say which practices the card covers
+     • no backend yet   -> say exactly that; NEVER simulate a reply
+   Nothing on this page ever fabricates an answer. If the concierge cannot be
+   reached, the person is told so. */
 const ROLE_CAN = {
   principal: "everything the console offers for this practice",
-  marketing: "content, photos, social posts, and social account setup",
-  editor:    "website copy and photos",
-  viewer:    "read-only — status, suggestions, and previews"
+  marketing: "site copy, layout, photos, social posts and account setup",
+  editor:    "site copy, layout, new pages and photos",
+  viewer:    "read-only — status, suggestions, inventory and previews"
 };
+const STARTERS = {
+  principal: ["How are we doing since the baseline?",
+              "What should we fix first, and why?",
+              "Draft a page for a procedure we're missing"],
+  marketing: ["What should we post this week?",
+              "Which photos would help the most?",
+              "Connect our Instagram"],
+  editor:    ["Tighten the copy on our busiest page",
+              "What content is the engine asking for?",
+              "Move the booking button higher on mobile"],
+  viewer:    ["What changed since the freeze?",
+              "Which metrics are stale, and why?",
+              "What is blocking the rest of the data?"]
+};
+let CHAT = {thread: null, busy: false, tier: "quick", log: []};
 
 function askScope(){
   const c = compOf(TENANT);
   return TENANT === "estate" ? "the whole estate" : (c ? c.name : TENANT);
 }
 
-async function askAtlas(question, host){
+function chatPush(kind, payload){
+  CHAT.log.push(Object.assign({kind}, payload));
+  paintChat();
+}
+
+function paintChat(){
+  const log = $("#chat-log");
+  if(!log) return;
+  log.innerHTML = CHAT.log.map(m => {
+    if(m.kind === "me") return `<div class="msg me">${esc(m.text)}</div>`;
+    if(m.kind === "tools"){
+      return `<div class="msg at">${m.items.map(t =>
+        `<span class="tool-chip ${t.state}">${esc(t.label)}</span>`).join("")}</div>`;
+    }
+    if(m.kind === "at"){
+      const props = (m.proposals || []).length
+        ? `<div class="prop-card"><b>${m.proposals.length} change proposal${m.proposals.length===1?"":"s"} queued</b>
+             <ul>${m.proposals.map(id => `<li>${esc(id)}</li>`).join("")}</ul>
+             Each one runs the estate's gates and Austin's review before anything goes live.
+             Nothing has changed on your site yet.</div>`
+        : "";
+      return `<div class="msg at"><p class="who">Atlas${m.tier ? " · " + esc(m.tier) : ""}</p>
+        <div class="body">${esc(m.text)}${m.typing ? '<span class="cursor"></span>' : ""}</div>${props}</div>`;
+    }
+    if(m.kind === "err") return `<div class="msg at"><p class="who">Atlas</p>
+      <div class="body" style="color:var(--serious)">${esc(m.text)}</div></div>`;
+    return "";
+  }).join("");
+  log.scrollTop = log.scrollHeight;
+  /* the thread label is part of the conversation's state, so it repaints with
+     it — otherwise it reads "new conversation" forever and a person cannot
+     tell whether Atlas is still remembering the last thing they said. */
+  const t = $("#chat-thread");
+  if(t) t.textContent = CHAT.thread ? "thread " + CHAT.thread.slice(0, 8)
+                                    : "new conversation";
+}
+
+async function chatSend(text){
+  if(CHAT.busy || !text.trim()) return;
   const token = tokenFor(TENANT);
-  const out = host.querySelector("#ask-out");
   if(!CONFIG.conciergeApi || !token) return;
-  out.textContent = "Asking…";
+  CHAT.busy = true;
+  chatPush("me", {text});
+  const box = $("#chat-q"); if(box){ box.value = ""; box.disabled = true; }
+  const btn = $("#chat-go"); if(btn) btn.disabled = true;
+  const reply = {kind: "at", text: "", typing: true, tier: CHAT.tier, proposals: []};
+  const toolMsg = {kind: "tools", items: []};
+  CHAT.log.push(toolMsg); CHAT.log.push(reply); paintChat();
+
+  const finish = () => {
+    reply.typing = false;
+    if(!toolMsg.items.length) CHAT.log.splice(CHAT.log.indexOf(toolMsg), 1);
+    CHAT.busy = false;
+    if(box){ box.disabled = false; box.focus(); }
+    if(btn) btn.disabled = false;
+    paintChat();
+  };
+
   try{
-    const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/ask", {
+    const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/stream", {
       method: "POST",
       headers: {"Content-Type": "application/json", "Authorization": "Bearer " + token},
-      body: JSON.stringify({message: question})
+      body: JSON.stringify({message: text, thread_id: CHAT.thread, tier: CHAT.tier})
     });
-    const doc = await r.json().catch(() => ({}));
     if(r.status === 401){
-      out.textContent = "Your access link is no longer valid. Ask Austin for a fresh one.";
-      return;
+      CHAT.log.splice(CHAT.log.indexOf(reply), 1);
+      chatPush("err", {text: "Your access link is no longer valid. Ask Austin for a fresh one."});
+      return finish();
     }
-    if(!r.ok){
-      out.textContent = (doc.detail || doc.error || ("HTTP " + r.status)) +
-        " — nothing was changed.";
-      return;
+    if(!r.ok || !r.body){
+      CHAT.log.splice(CHAT.log.indexOf(reply), 1);
+      chatPush("err", {text: "Could not reach the concierge (HTTP " + r.status + "). Nothing was changed."});
+      return finish();
     }
-    out.textContent = doc.answer || "";
-    if(doc.proposals && doc.proposals.length){
-      out.textContent += "\n\nQueued as proposal(s): " + doc.proposals.join(", ") +
-        " — the gates and Austin run before anything ships.";
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    let buf = "", ev = null;
+    while(true){
+      const {done, value} = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, {stream: true});
+      let i;
+      while((i = buf.indexOf("\n\n")) >= 0){
+        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+        for(const line of frame.split("\n")){
+          if(line.startsWith("event: ")) ev = line.slice(7).trim();
+          else if(line.startsWith("data: ")){
+            let d; try{ d = JSON.parse(line.slice(6)); }catch(_){ continue; }
+            if(ev === "status"){ CHAT.thread = d.thread_id || CHAT.thread; reply.tier = d.tier || reply.tier; }
+            else if(ev === "tool"){ toolMsg.items.push({label: d.name.replace(/_/g, " "), state: ""}); }
+            else if(ev === "tool_result"){
+              const last = toolMsg.items[toolMsg.items.length - 1];
+              if(last) last.state = d.ok ? "done" : "refused";
+            }
+            else if(ev === "answer"){ reply.text += d.delta || ""; }
+            else if(ev === "error"){
+              reply.text = (d.detail || d.error || "something went wrong") +
+                (d.kinds ? " (" + d.kinds.join(", ") + ")" : "");
+            }
+            else if(ev === "done"){
+              reply.proposals = d.proposals || [];
+              CHAT.thread = d.thread_id || CHAT.thread;
+            }
+            paintChat();
+          }
+        }
+      }
     }
   }catch(e){
-    out.textContent = "Could not reach the concierge: " + e.message +
-      " — nothing was changed.";
+    reply.text = reply.text || ("Could not reach the concierge: " + e.message +
+                                " — nothing was changed.");
   }
+  finish();
 }
 
 function renderAsk(){
@@ -854,83 +1620,89 @@ function renderAsk(){
   const token = tokenFor(TENANT);
   const role = roleFor(TENANT);
   const live = backend && !!token;
-
   const state = !SESSION ? "out" : (!token ? "nokey" : (backend ? "live" : "staged"));
-  const chip = {
-    out:    ['wait', 'sign in to use'],
-    nokey:  ['wait', 'not your practice'],
-    staged: ['wait', 'activation pending'],
-    live:   ['ok',   'connected']
+  const chip = {out: ["wait", "sign in to use"], nokey: ["wait", "not your practice"],
+                staged: ["wait", "activation pending"], live: ["ok", "connected"]}[state];
+  const who = SESSION ? esc(SESSION.name || SESSION.id) : "";
+  const banner = {
+    out: `This console's figures are the estate's shared read-out. <b>Ask Atlas</b> opens
+          when you sign in — use the access link Austin sent you (top right). No password.`,
+    nokey: `You're signed in as <b>${who}</b>, but your card doesn't cover <b>${esc(scope)}</b>.
+            Pick a practice you have access to, or ask Austin to add this one.`,
+    staged: `You're signed in as <b>${who}</b> — <b>${esc(role || "")}</b> on <b>${esc(scope)}</b>:
+             ${esc(ROLE_CAN[role] || "your assigned scope")}. Your access is ready; the concierge
+             backend is not deployed yet, so this stays honestly dark rather than pretending to answer.`,
+    live: `<b>${who}</b> · <b>${esc(role || "")}</b> on <b>${esc(scope)}</b> —
+           ${esc(ROLE_CAN[role] || "your assigned scope")}.`
   }[state];
-
-  const you = {
-    out: `<div class="ask-you">This console's figures are the estate's shared read-out.
-      <b>Ask Atlas</b> opens when you sign in — use the access link Austin sent you
-      (top right). No password, nothing to remember.</div>`,
-    nokey: `<div class="ask-you">You're signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b>,
-      but your card doesn't cover <b>${esc(scope)}</b>. Pick a practice you have access to
-      in the selector, or ask Austin to add this one.</div>`,
-    staged: `<div class="ask-you">You're signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b> —
-      <b>${esc(role || "")}</b> on <b>${esc(scope)}</b>, which means ${esc(ROLE_CAN[role] || "your assigned scope")}.
-      Your access is ready; the concierge backend is not deployed yet, so this panel stays
-      honestly dark rather than pretending to answer.</div>`,
-    live: `<div class="ask-you">Signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b> —
-      <b>${esc(role || "")}</b> on <b>${esc(scope)}</b>: ${esc(ROLE_CAN[role] || "your assigned scope")}.</div>`
-  }[state];
+  const starters = STARTERS[role] || STARTERS.viewer;
 
   host.innerHTML = `
     <div class="ask-head"><h3>Atlas Concierge</h3>
       <span class="chip ${chip[0]}">${chip[1]}</span>
       <span class="chip dim">scope: ${esc(scope)}</span></div>
     <div class="ask-body">
-      <div class="ask-can">
-        ${you}
-        <b>What this does:</b>
-        <ul>
-          <li><b>Ask anything</b> about your numbers, your pages, your reviews — answered live from the engine's measurements.</li>
-          <li><b>Request site updates</b> — copy, photos, new content. Your request becomes a change proposal that runs the estate's quality gates (medical-claims, terminology, provenance) before anything ships. If it fits, it ships; if it doesn't, you'll see exactly why.</li>
-          <li><b>Connect &amp; post to your social accounts</b> — OAuth-secured; your tokens never leave the vault.</li>
-          <li><b>Pull ideas from the Content Studio</b> above and say "write it" — it lands in the same gated pipeline.</li>
-        </ul>
-        <p class="ask-flow">The engine and the coding stay with Atlas — you pick the colors, the interior, the rims.
-        Every change is checked for fit before it goes on the car, so it can only ever make it better.</p>
-        <div class="ask-input">
-          <input type="text" id="ask-q" placeholder="${live ? "Ask about " + esc(scope) + "…" : (state === "out" ? "Sign in to ask" : "Activation pending — see the right panel")}" ${live ? "" : "disabled"} aria-label="Ask Atlas">
-          <button id="ask-go" ${live ? "" : "disabled"}>Ask</button>
+      <div>
+        <div class="ask-you">${banner}</div>
+        <div class="chat">
+          <div class="chat-log" id="chat-log"></div>
+          <div class="chat-starters" id="chat-starters">
+            ${live ? starters.map(t => `<button type="button">${esc(t)}</button>`).join("") : ""}
+          </div>
+          <div class="chat-in">
+            <textarea id="chat-q" rows="1" aria-label="Ask Atlas" ${live ? "" : "disabled"}
+              placeholder="${live ? "Ask about " + esc(scope) + "… (Enter to send, Shift+Enter for a new line)"
+                                  : (state === "out" ? "Sign in to ask" : "Not available yet")}"></textarea>
+            <button id="chat-go" ${live ? "" : "disabled"}>Ask</button>
+          </div>
+          <div class="chat-meta">
+            <span>depth</span>
+            <select id="chat-tier" ${live ? "" : "disabled"}>
+              <option value="quick">quick — conversation and drafting</option>
+              <option value="deep">deep — think hard about it</option>
+            </select>
+            <span id="chat-thread"></span>
+            <span style="margin-left:auto">no personal health details — marketing plane only</span>
+          </div>
         </div>
-        <pre id="ask-out" style="white-space:pre-wrap;font-family:var(--mono);font-size:12px;
-          color:var(--ink2);margin:10px 0 0"></pre>
-        <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Please don't include personal health details —
-        this concierge works the marketing plane only.</p>
       </div>
       <div>
         <div class="ask-gate">${backend
-          ? `<b>Connected.</b> Every answer is read live from the engine; every change you ask
-             for becomes a proposal in the estate's gated pipeline. Nothing you click here can
-             publish by itself — that is the point.`
-          : `<b>Activation pending.</b> The concierge backend
-             (Claude on Amazon Bedrock, driving the estate's gated change pipeline) is staged in the
-             platform and deploys with your client credentials. Until then this panel stays honestly dark —
-             no simulated chat. Architecture: docs/CLIENT_CONSOLE_ARCHITECTURE.md.`}</div>
+          ? `<b>Connected.</b> Answers are read live from the engine. Anything you ask to
+             change becomes a <b>proposal</b> in the gated pipeline — nothing you click here
+             publishes by itself, which is the point.`
+          : `<b>Activation pending.</b> The backend (Claude on Amazon Bedrock, driving the
+             estate's gated change pipeline) is built and tested; it deploys with your
+             credentials — see ops board OPS-31. Until then this panel stays dark rather
+             than simulating a conversation.`}</div>
         <p class="ask-flow">how a request travels:<br>
-        you ask → Claude (Bedrock) answers or drafts → drafts become <b>change proposals</b> →
-        the estate's gates check fit → Atlas approves → it ships → you see it here, measured.</p>
+        you ask → Claude answers or drafts → drafts become <b>change proposals</b> →
+        the estate's gates check fit → Austin approves → it ships → you see it here, measured.</p>
         <p class="ask-flow">who can do what: <b>principal</b> everything ·
-        <b>marketing</b> content, photos, social · <b>editor</b> copy and photos ·
+        <b>marketing</b> copy, layout, photos, social · <b>editor</b> copy, layout, pages ·
         <b>viewer</b> read-only. Nobody — including Atlas, from here — can touch
         infrastructure, credentials, another practice's data, or clinical approval.</p>
       </div>
     </div>`;
 
-  if(live){
-    const go = () => {
-      const q = String(host.querySelector("#ask-q").value || "").trim();
-      if(q) askAtlas(q, host);
-    };
-    host.querySelector("#ask-go").addEventListener("click", go);
-    host.querySelector("#ask-q").addEventListener("keydown",
-      e => { if(e.key === "Enter") go(); });
-  }
+  paintChat();
+  const t = $("#chat-thread");
+  if(t) t.textContent = CHAT.thread ? "thread " + CHAT.thread.slice(0, 8) : "new conversation";
+  if(!live) return;
+  const box = $("#chat-q"), btn = $("#chat-go"), tier = $("#chat-tier");
+  tier.value = CHAT.tier;
+  tier.addEventListener("change", () => { CHAT.tier = tier.value; });
+  const send = () => chatSend(box.value);
+  btn.addEventListener("click", send);
+  box.addEventListener("keydown", e => {
+    if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+  box.addEventListener("input", () => {
+    box.style.height = "auto";
+    box.style.height = Math.min(150, box.scrollHeight) + "px";
+  });
+  $("#chat-starters").querySelectorAll("button").forEach(b =>
+    b.addEventListener("click", () => { box.value = b.textContent; send(); }));
 }
 
 function deltaHtml(seriesId, goodWhen){
@@ -967,10 +1739,19 @@ function renderLedger(){
     ledgerTile("LCP p75 (field)", "crux.lcp_p75_ms", "ms", "down"),
     ledgerTile("INP p75 (field)", "crux.inp_p75_ms", "ms", "down"),
   ];
-  /* the Authority Index is a demo composite — label law: it may never read as measured */
-  rows.push(`<div><span class="k">Authority Index (console)</span><span class="n">67.4</span>
-    <span class="d"><span class="chip demo">demo</span> <span class="chip date">composite of 7 pillars</span></span>
-    <span class="d delta-flat">demonstration series — see flagship console</span></div>`);
+  /* The Authority Index used to be a hardcoded demonstration number here.
+     The engine computes a real one, so the console reads THAT or reads
+     nothing: a recorded absence beats a plausible invention. It is still
+     `derived`, never MEASURED — a composite of measured parts is not itself
+     a measurement, and the label says so. */
+  const ai = latestEngineObservation(TENANT, "authority_index");
+  rows.push(ai
+    ? `<div><span class="k">Authority Index</span><span class="n">${FMT(ai.value)}</span>
+        <span class="d">${classChip(ai.evidence_class)} <span class="chip date">${esc(ai.date)}</span></span>
+        <span class="d delta-flat">${esc(ageWords(ai.date))} · computed by the engine from its measured pillars</span></div>`
+    : `<div><span class="k">Authority Index</span><span class="n">—</span>
+        <span class="d"><span class="chip gap">gap</span></span>
+        <span class="d delta-flat">the engine has not computed one for this component yet — nothing is shown rather than something invented</span></div>`);
   $("#ledger").innerHTML = rows.join("");
 }
 
