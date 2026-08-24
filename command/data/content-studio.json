@@ -1,0 +1,110 @@
+{
+ "schema": "atlas-content-studio-v1",
+ "captured_at": "2026-08-24",
+ "note": "Suggestions are DERIVED from measurements on file \u2014 authority-graph opportunity scores, the frozen keyword baselines, IA keyword targets, and corpus gaps. Nothing here is a guess; every card cites its evidence. Recent-demand deltas activate when the hourly Semrush pull goes live (OPS-28).",
+ "demand_deltas": {
+  "state": "awaiting_credential",
+  "note": "Recent search-demand CHANGES need the live hourly Semrush pull (SEMRUSH_API_KEY secret + unit top-up, OPS-28). Until then, suggestions rank on the frozen 2026-08-14 baselines \u2014 honest, just not hourly."
+ },
+ "suggestions": [
+  {
+   "tenant": "tsa-cuzalina",
+   "priority": 1,
+   "kind": "authority",
+   "title": "Facial volume & implants \u2014 the biggest untold story",
+   "why": "Authority-graph opportunity 79 (VERY_HIGH): documentation 84, corroboration 24, digital representation 0 \u2014 published expertise with NO page telling it.",
+   "action": "Author the facial-volume-and-implants cluster (corpus records + /research crosslinks); the evidence rows already exist in the manifest.",
+   "evidence": "authority-graph DOSSIER 2026-08-24 \u00b7 manifest entries incl. 2009 facial-implant complications, 2000 alloplastic augmentation"
+  },
+  {
+   "tenant": "tsa-cuzalina",
+   "priority": 2,
+   "kind": "authority",
+   "title": "Brow & forehead \u2014 second-highest opportunity",
+   "why": "Opportunity 69 (VERY_HIGH): documentation 74 (incl. the 2005 endoscopic brow-lift chapter + supraorbital-nerve paper), digital representation 5.",
+   "action": "Brow-lift procedure record + a journal piece citing the supraorbital landmark work.",
+   "evidence": "authority-graph DOSSIER 2026-08-24"
+  },
+  {
+   "tenant": "tsa-cuzalina",
+   "priority": 3,
+   "kind": "demand",
+   "title": "botox tulsa \u2014 480/mo, KD 2, position: nobody looked",
+   "why": "Highest-volume, lowest-difficulty keyword in the frozen baseline with NO observed position (a gap, not a zero). The medspa page is the natural home.",
+   "action": "Injectables content cluster on /medspa/ with pricing rows (already public) + FAQ schema.",
+   "evidence": "BASELINE_2026-08-14 keyword_baseline"
+  },
+  {
+   "tenant": "tsa-cuzalina",
+   "priority": 4,
+   "kind": "demand",
+   "title": "weight loss clinic tulsa \u2014 390/mo, KD 25",
+   "why": "Unranked in the baseline; the wellness program is the lander. COMPLIANCE FIRST: the live page's GLP-1 trademark language must be fixed before amplifying it.",
+   "action": "Fix the GLP-1 language (owner list), then the medical-weight-loss page through check_medical_claims (molecule named, FDA-vs-compounded stated).",
+   "evidence": "BASELINE_2026-08-14 \u00b7 live-estate audit BLOCKER (wellness)"
+  },
+  {
+   "tenant": "tsa-cuzalina",
+   "priority": 5,
+   "kind": "corpus",
+   "title": "The 55 legacy articles \u2014 Lane B's bulk",
+   "why": "Engine cutover parity needs them; the router already lands their legacy URLs on procedure pages, so migrated articles inherit real equity.",
+   "action": "Migrate as posts records (citations mandatory per the posts schema), DRAFT_PENDING_CLINICAL_REVIEW.",
+   "evidence": "LAUNCH_RUNBOOK Lane B step 2 \u00b7 router census 2026-08-23"
+  },
+  {
+   "tenant": "osa",
+   "priority": 1,
+   "kind": "demand",
+   "title": "tummy tuck oklahoma city \u2014 260/mo at KD 7",
+   "why": "Best volume-to-difficulty ratio in the OSA target set; the deepened record already exists (awaiting clinical review).",
+   "action": "Clinical review unlocks it; then internal links from the OKC hub + a recovery-timeline journal piece.",
+   "evidence": "ia/osa.json targets (semrush-us-2026-08-14) \u00b7 corpus record on file"
+  },
+  {
+   "tenant": "osa",
+   "priority": 2,
+   "kind": "demand",
+   "title": "eyelid surgery oklahoma city \u2014 110/mo, KD 9",
+   "why": "KD 9 with a brand-new full-depth record authored this session.",
+   "action": "Review + publish path; add the before/after gallery rows when consented cases exist.",
+   "evidence": "ia/osa.json targets \u00b7 procedures/eyelid-surgery.json (2026-08-24)"
+  },
+  {
+   "tenant": "osa",
+   "priority": 3,
+   "kind": "demand",
+   "title": "hormone replacement therapy oklahoma city \u2014 KD 3",
+   "why": "Easiest target on the OSA board (70/mo, KD 3) \u2014 and rx-gated: the medical-claims gate is load-bearing here.",
+   "action": "Program page through check_medical_claims; BAA'd intake before any form.",
+   "evidence": "ia/osa.json targets (rx route)"
+  },
+  {
+   "tenant": "osa",
+   "priority": 4,
+   "kind": "corpus",
+   "title": "14 procedure records await one clinical review session",
+   "why": "The entire OSA corpus (8 new + 6 deepened, all above TSA's depth bar) is one ATTESTATION.md tick-and-commit from publishable.",
+   "action": "Owner + clinician: tenants/osa/ATTESTATION.md.",
+   "evidence": "validate_corpus 2026-08-24: 26 records, 0 violations"
+  },
+  {
+   "tenant": "bella-roma",
+   "priority": 1,
+   "kind": "launch",
+   "title": "med spa tulsa \u2014 320/mo waiting on a domain",
+   "why": "The baseline records the demand (KD 31) and the estate has no dedicated surface; OPS-14 is the unlock.",
+   "action": "Register bellaromamedspa.com \u2192 tenant scaffold \u2192 baseline freeze \u2192 then content.",
+   "evidence": "BASELINE_2026-08-14 \u00b7 OPS-14"
+  },
+  {
+   "tenant": "tsa-wellness",
+   "priority": 1,
+   "kind": "launch",
+   "title": "The wellness program needs its own measured surface",
+   "why": "Wellness demand shows in both cities' baselines (weight loss clinic tulsa 390/mo \u00b7 OKC 140/mo) while wellness lives as one page with a compliance defect.",
+   "action": "Fix GLP-1 language \u2192 register tsawellness.com \u2192 tenant + baseline \u2192 program pages through the medical-claims gate.",
+   "evidence": "both keyword baselines \u00b7 live-estate audit"
+  }
+ ]
+}

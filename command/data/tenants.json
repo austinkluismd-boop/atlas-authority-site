@@ -1,0 +1,99 @@
+{
+ "schema": "atlas-command-tenants-v1",
+ "captured_at": "2026-08-24",
+ "note": "The estate registry the console renders. Every component of the estate appears here with an honest status; granular figures flow per tenant from the atlas engine, and the composite composes ONLY within one provenance class at a time.",
+ "components": [
+  {
+   "slug": "estate",
+   "name": "Estate Composite",
+   "short": "ESTATE",
+   "kind": "composite",
+   "status": "live",
+   "tagline": "Every campus and program, composed \u2014 never across provenance classes."
+  },
+  {
+   "slug": "tsa-cuzalina",
+   "name": "Tulsa Surgical Arts",
+   "short": "TSA",
+   "kind": "campus",
+   "status": "live",
+   "domain": "tulsasurgicalarts.com",
+   "engine_status": "active \u2014 full ingest, frozen 2026-08-14 baseline",
+   "tagline": "The flagship campus. #1 on brand terms; the engine's active tenant."
+  },
+  {
+   "slug": "osa",
+   "name": "Oklahoma Surgical Arts",
+   "short": "OSA",
+   "kind": "campus",
+   "status": "live",
+   "domain": "oklahomasurgicalarts.com",
+   "engine_status": "pending_baseline_freeze (engine \u00a710) \u2014 baseline frozen 2026-08-14, ingest opens at freeze completion",
+   "tagline": "The Oklahoma City campus. Corpus built to depth this session; awaiting clinical review."
+  },
+  {
+   "slug": "bella-roma",
+   "name": "Bella Roma Med Spa",
+   "short": "BELLA ROMA",
+   "kind": "program",
+   "status": "pre_launch",
+   "domain": "bellaromamedspa.com (UNREGISTERED \u2014 OPS-14)",
+   "engine_status": "not yet a tenant \u2014 registry entry pending domain + baseline freeze",
+   "tagline": "The med-spa program. Pre-launch: no baseline exists yet, and a gap is not a zero.",
+   "unlocks": [
+    "Register bellaromamedspa.com (OPS-14) \u2014 deploy refuses until registered:true",
+    "Claim the Bella Roma GBP department listing (existence uncaptured \u2014 LOCAL-01)",
+    "Apple Business Connect claim rides OPS-19 (already names Bella Roma)",
+    "Tenant scaffold + baseline freeze (TENANT_ONBOARDING.md pipeline)"
+   ]
+  },
+  {
+   "slug": "tsa-wellness",
+   "name": "TSA Wellness",
+   "short": "WELLNESS",
+   "kind": "program",
+   "status": "pre_launch",
+   "domain": "tsawellness.com (UNREGISTERED \u2014 OPS-14)",
+   "engine_status": "not yet a tenant \u2014 registry entry pending domain + baseline freeze",
+   "tagline": "The wellness & longevity program. Pre-launch: measured truth starts at its baseline freeze.",
+   "unlocks": [
+    "Register tsawellness.com (OPS-14)",
+    "Resolve the live wellness page's GLP-1 trademark language first (compliance exposure rides with this program)",
+    "Tenant scaffold + baseline freeze; medical-claims gate (check_medical_claims) applies to every page",
+    "BAA'd intake vendor (OPS-5) before any wellness intake form ships"
+   ]
+  }
+ ],
+ "composite": {
+  "note": "Composed figures carry BOTH capture dates (mixed-vintage law: date both halves).",
+  "measured": [
+   {
+    "label": "Google reviews, all campuses",
+    "value": 533,
+    "parts": "TSA 523 (2026-08-07) + OSA 10 (2026-08-12)",
+    "provenance": "measurement"
+   },
+   {
+    "label": "Google rating, per campus",
+    "value": "4.9 \u00b7 5.0",
+    "parts": "TSA 4.9 (08-07) \u00b7 OSA 5.0 (08-12) \u2014 never averaged across campuses",
+    "provenance": "measurement"
+   }
+  ],
+  "estimate": [
+   {
+    "label": "Organic sessions / mo, both domains",
+    "value": 5709,
+    "parts": "TSA 5,311 + OSA 398 (both Semrush, 2026-08-23 / 2026-08-14)",
+    "provenance": "estimate"
+   },
+   {
+    "label": "Organic traffic value / mo",
+    "value": 17811,
+    "unit": "USD",
+    "parts": "TSA $15,814 (08-23) + OSA $1,997 (08-14)",
+    "provenance": "estimate"
+   }
+  ]
+ }
+}
