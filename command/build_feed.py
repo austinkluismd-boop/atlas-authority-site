@@ -207,6 +207,8 @@ def main() -> int:
                        "MEASURED renders only for provenance 'measurement'. Estimates are vendor "
                        "models, never the practice's own record. A gap is a recorded absence, never a zero."),
         "baseline": _read(DATA / "baseline-index.json"),
+        "tenants": _read(DATA / "tenants.json"),
+        "content_studio": _read(DATA / "content-studio.json"),
         "engine": _read(DATA / "engine-coverage.json"),
         "ops_queue": _read(DATA / "ops-queue.json"),
         "priorities": _read(DATA / "priorities.json"),
