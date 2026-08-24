@@ -286,6 +286,25 @@ tr:last-child td{border-bottom:0}
 .chat-in button{background:var(--gold);color:#12110F;border:0;border-radius:8px;
   padding:11px 18px;font-weight:600;font-size:13px;cursor:pointer;font-family:var(--body)}
 .chat-in button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.chat-files{display:flex;gap:8px;flex-wrap:wrap;padding:0 12px 9px;background:var(--panel)}
+.fchip{display:flex;align-items:center;gap:8px;background:var(--sunk);
+  border:1px solid var(--line);border-radius:8px;padding:5px 8px 5px 5px;font-size:11.5px;color:var(--ink2)}
+.fchip img{width:34px;height:34px;object-fit:cover;border-radius:5px;display:block}
+.fchip .fdoc{width:34px;height:34px;display:grid;place-items:center;background:var(--panel2);
+  border-radius:5px;font-family:var(--mono);font-size:9px;color:var(--muted)}
+.fchip b{color:var(--ink);font-weight:600;max-width:150px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;display:block}
+.fchip .fmeta{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.fchip .fx{background:none;border:0;color:var(--muted);cursor:pointer;font-size:15px;
+  line-height:1;padding:0 2px}
+.fchip .fx:hover{color:var(--serious)}
+.fchip.bad{border-color:var(--serious)}
+.fchip.bad .fmeta{color:var(--serious)}
+.chat.drag{outline:2px dashed var(--gold);outline-offset:-6px}
+.chat-in .clip{background:transparent;border:1px solid var(--line);color:var(--ink2);
+  border-radius:8px;padding:10px 12px;cursor:pointer;font-size:15px;line-height:1}
+.chat-in .clip:hover{border-color:var(--gold);color:var(--gold)}
+.chat-in .clip:disabled{opacity:.4;cursor:not-allowed}
 .chat-starters{display:flex;gap:7px;flex-wrap:wrap;padding:0 12px 11px;background:var(--panel)}
 .chat-starters button{background:transparent;border:1px solid var(--line);color:var(--ink2);
   border-radius:20px;padding:6px 12px;font-size:11.5px;cursor:pointer;font-family:var(--body)}
@@ -1497,7 +1516,108 @@ const STARTERS = {
               "Which metrics are stale, and why?",
               "What is blocking the rest of the data?"]
 };
-let CHAT = {thread: null, busy: false, tier: "quick", log: []};
+let CHAT = {thread: null, busy: false, tier: "quick", log: [], files: []};
+
+/* --- attachments ---------------------------------------------------------
+   "Use this photo" should be a drag, not a project. A file is picked here,
+   uploaded to the estate's own concierge, and the conversation then carries
+   only its id — the bytes never go near the model, and nothing is published
+   by attaching it. The console checks size and type before sending so a
+   person is told "that's a .mov" here rather than after a 12 MB round trip;
+   the SERVER checks the actual bytes, because a filename is not evidence. */
+const MAX_ATTACH = 12 * 1024 * 1024;
+const OK_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic",
+                  "image/gif", "application/pdf"];
+const MAX_FILES = 4;
+
+function humanBytes(n){
+  return n >= 1048576 ? (n / 1048576).toFixed(1) + " MB"
+                      : Math.max(1, Math.round(n / 1024)) + " KB";
+}
+
+function addFiles(list){
+  for(const f of Array.from(list || [])){
+    if(CHAT.files.length >= MAX_FILES){
+      CHAT.files.push({name: "…", bad: `only ${MAX_FILES} files at a time`});
+      break;
+    }
+    if(f.size > MAX_ATTACH){
+      CHAT.files.push({name: f.name, size: f.size,
+                       bad: `too big (${humanBytes(f.size)}; limit 12 MB)`});
+      continue;
+    }
+    if(f.type && !OK_TYPES.includes(f.type)){
+      CHAT.files.push({name: f.name, size: f.size,
+                       bad: `${f.type || "unknown type"} isn't accepted — photos or PDFs`});
+      continue;
+    }
+    const rec = {name: f.name, size: f.size, type: f.type, file: f};
+    if(/^image\//.test(f.type)) rec.preview = URL.createObjectURL(f);
+    CHAT.files.push(rec);
+  }
+  paintFiles();
+}
+
+function paintFiles(){
+  const host = $("#chat-files");
+  if(!host) return;
+  host.innerHTML = CHAT.files.map((f, i) => `
+    <div class="fchip ${f.bad ? "bad" : ""}">
+      ${f.preview ? `<img src="${f.preview}" alt="">`
+                  : `<span class="fdoc">${esc((f.name.split(".").pop() || "?").slice(0,4).toUpperCase())}</span>`}
+      <span><b>${esc(f.name)}</b>
+        <span class="fmeta">${f.bad ? esc(f.bad) : humanBytes(f.size || 0)}</span></span>
+      <button class="fx" data-i="${i}" aria-label="Remove ${esc(f.name)}">×</button>
+    </div>`).join("");
+  /* A file claiming image/* that the browser cannot decode is exactly the
+     case the server refuses — show the document badge rather than a broken
+     image icon, which reads as a bug in the console. */
+  host.querySelectorAll(".fchip img").forEach(img => img.addEventListener("error", () => {
+    const span = document.createElement("span");
+    span.className = "fdoc";
+    span.textContent = "?";
+    img.replaceWith(span);
+  }));
+  host.querySelectorAll(".fx").forEach(b => b.addEventListener("click", () => {
+    const f = CHAT.files[+b.dataset.i];
+    if(f && f.preview) URL.revokeObjectURL(f.preview);
+    CHAT.files.splice(+b.dataset.i, 1);
+    paintFiles();
+  }));
+}
+
+function fileToBase64(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onerror = () => rej(new Error("could not read " + file.name));
+    r.onload = () => { const s = String(r.result); res(s.slice(s.indexOf(",") + 1)); };
+    r.readAsDataURL(file);
+  });
+}
+
+async function uploadPending(){
+  const token = tokenFor(TENANT);
+  const out = [];
+  for(const f of CHAT.files){
+    if(f.bad || !f.file) continue;
+    const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/upload", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer " + token},
+      body: JSON.stringify({filename: f.name, data_base64: await fileToBase64(f.file)})
+    });
+    const doc = await r.json().catch(() => ({}));
+    if(!r.ok){
+      /* mark the file that failed, so a person can see WHICH one and why
+         without reading the message above it */
+      f.bad = doc.detail || doc.error || ("upload failed (" + r.status + ")");
+      delete f.file;
+      paintFiles();
+      throw new Error(f.bad);
+    }
+    out.push({media_id: doc.media_id, name: f.name, type: doc.type, bytes: doc.bytes});
+  }
+  return out;
+}
 
 function askScope(){
   const c = compOf(TENANT);
@@ -1513,7 +1633,9 @@ function paintChat(){
   const log = $("#chat-log");
   if(!log) return;
   log.innerHTML = CHAT.log.map(m => {
-    if(m.kind === "me") return `<div class="msg me">${esc(m.text)}</div>`;
+    if(m.kind === "me") return `<div class="msg me">${esc(m.text)}${
+      (m.files || []).length ? `<div class="fmeta" style="margin-top:6px;opacity:.8">📎 ${
+        m.files.map(esc).join(", ")}</div>` : ""}</div>`;
     if(m.kind === "tools"){
       return `<div class="msg at">${m.items.map(t =>
         `<span class="tool-chip ${t.state}">${esc(t.label)}</span>`).join("")}</div>`;
@@ -1542,19 +1664,42 @@ function paintChat(){
 }
 
 async function chatSend(text){
-  if(CHAT.busy || !text.trim()) return;
+  const pending = CHAT.files.filter(f => !f.bad && f.file);
+  if(CHAT.busy || (!text.trim() && !pending.length)) return;
   const token = tokenFor(TENANT);
   if(!CONFIG.conciergeApi || !token) return;
   CHAT.busy = true;
-  chatPush("me", {text});
+  chatPush("me", {text, files: pending.map(f => f.name)});
   const box = $("#chat-q"); if(box){ box.value = ""; box.disabled = true; }
   const btn = $("#chat-go"); if(btn) btn.disabled = true;
+  const clip = $("#chat-clip"); if(clip) clip.disabled = true;
+
+  let attached = [];
+  if(pending.length){
+    chatPush("tools", {items: pending.map(f => ({label: "uploading " + f.name, state: ""}))});
+    try{
+      attached = await uploadPending();
+      const m = CHAT.log[CHAT.log.length - 1];
+      m.items = attached.map(a => ({label: a.name, state: "done"}));
+    }catch(e){
+      const m = CHAT.log[CHAT.log.length - 1];
+      m.items = pending.map(f => ({label: f.name, state: "refused"}));
+      chatPush("err", {text: e.message + " — nothing was stored, and nothing was changed."});
+      CHAT.busy = false;
+      if(box){ box.disabled = false; } if(btn) btn.disabled = false;
+      if(clip) clip.disabled = false;
+      return;
+    }
+    CHAT.files.forEach(f => { if(f.preview) URL.revokeObjectURL(f.preview); });
+    CHAT.files = []; paintFiles();
+  }
   const reply = {kind: "at", text: "", typing: true, tier: CHAT.tier, proposals: []};
   const toolMsg = {kind: "tools", items: []};
   CHAT.log.push(toolMsg); CHAT.log.push(reply); paintChat();
 
   const finish = () => {
     reply.typing = false;
+    const c = $("#chat-clip"); if(c) c.disabled = false;
     if(!toolMsg.items.length) CHAT.log.splice(CHAT.log.indexOf(toolMsg), 1);
     CHAT.busy = false;
     if(box){ box.disabled = false; box.focus(); }
@@ -1566,7 +1711,13 @@ async function chatSend(text){
     const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/stream", {
       method: "POST",
       headers: {"Content-Type": "application/json", "Authorization": "Bearer " + token},
-      body: JSON.stringify({message: text, thread_id: CHAT.thread, tier: CHAT.tier})
+      body: JSON.stringify({
+        message: text + (attached.length
+          ? "\n\n[attached by the person, already uploaded to this practice's "
+            + "store — pass the media_id when proposing a photo change]\n"
+            + attached.map(a => `- ${a.name} (${a.type}, ${a.bytes} bytes) media_id: ${a.media_id}`).join("\n")
+          : ""),
+        thread_id: CHAT.thread, tier: CHAT.tier})
     });
     if(r.status === 401){
       CHAT.log.splice(CHAT.log.indexOf(reply), 1);
@@ -1651,12 +1802,16 @@ function renderAsk(){
         <div class="ask-you">${banner}</div>
         <div class="chat">
           <div class="chat-log" id="chat-log"></div>
+          <div class="chat-files" id="chat-files"></div>
           <div class="chat-starters" id="chat-starters">
             ${live ? starters.map(t => `<button type="button">${esc(t)}</button>`).join("") : ""}
           </div>
           <div class="chat-in">
+            <input type="file" id="chat-file" multiple accept="image/*,application/pdf" hidden>
+            <button class="clip" id="chat-clip" title="Attach a photo or PDF"
+              aria-label="Attach a photo or PDF" ${live ? "" : "disabled"}>📎</button>
             <textarea id="chat-q" rows="1" aria-label="Ask Atlas" ${live ? "" : "disabled"}
-              placeholder="${live ? "Ask about " + esc(scope) + "… (Enter to send, Shift+Enter for a new line)"
+              placeholder="${live ? "Ask about " + esc(scope) + "…  📎 attach, drag or paste a photo"
                                   : (state === "out" ? "Sign in to ask" : "Not available yet")}"></textarea>
             <button id="chat-go" ${live ? "" : "disabled"}>Ask</button>
           </div>
@@ -1708,6 +1863,28 @@ function renderAsk(){
   });
   $("#chat-starters").querySelectorAll("button").forEach(b =>
     b.addEventListener("click", () => { box.value = b.textContent; send(); }));
+
+  /* three ways to attach, because people reach for all three: the clip, a
+     drag onto the conversation, and a paste straight from a screenshot. */
+  const picker = $("#chat-file"), clip = $("#chat-clip"), pane = host.querySelector(".chat");
+  clip.addEventListener("click", () => picker.click());
+  picker.addEventListener("change", () => { addFiles(picker.files); picker.value = ""; });
+  ["dragenter", "dragover"].forEach(ev => pane.addEventListener(ev, e => {
+    e.preventDefault(); pane.classList.add("drag");
+  }));
+  ["dragleave", "drop"].forEach(ev => pane.addEventListener(ev, e => {
+    e.preventDefault();
+    if(ev === "dragleave" && pane.contains(e.relatedTarget)) return;
+    pane.classList.remove("drag");
+  }));
+  pane.addEventListener("drop", e => {
+    if(e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+  });
+  box.addEventListener("paste", e => {
+    const items = (e.clipboardData || {}).files;
+    if(items && items.length){ e.preventDefault(); addFiles(items); }
+  });
+  paintFiles();
 }
 
 function deltaHtml(seriesId, goodWhen){
