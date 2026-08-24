@@ -1,0 +1,57 @@
+# deploy-command-s3.yml — sync the site to the gate's S3 origin (OPS-32).
+#
+# SHIPS DARK: the job runs only when the AWS_DEPLOY_ROLE repository variable
+# exists, which requires the owner to create the OIDC role first (Class-4,
+# theirs). Until then every run is a loud no-op, never a silent failure.
+#
+# CI is the writer here on purpose (ADR-0019: proof lane writes production):
+# no laptop, session, or bare `aws s3 sync` from a shell ever touches the
+# bucket — the synced bytes are exactly a commit on main.
+name: deploy-command-s3
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+permissions:
+  id-token: write
+  contents: read
+concurrency:
+  group: deploy-command-s3
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: gate on owner activation
+        id: armed
+        run: |
+          if [ -z "${{ vars.AWS_DEPLOY_ROLE }}" ] || [ -z "${{ vars.AWS_SITE_BUCKET }}" ]; then
+            echo "NOT ARMED: set repo variables AWS_DEPLOY_ROLE and AWS_SITE_BUCKET (owner step 2 of deploy_command_gate.sh). Doing nothing."
+            echo "armed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "armed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v5.0.0
+        if: steps.armed.outputs.armed == 'true'
+      - uses: aws-actions/configure-aws-credentials@a159d7bb5354cf786f855f2f5d1d8d768d9a08d1 # v5.0.0
+        if: steps.armed.outputs.armed == 'true'
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE }}
+          aws-region: us-east-1
+      - name: sync (exact mirror of the commit, exclusions first)
+        if: steps.armed.outputs.armed == 'true'
+        run: |
+          aws s3 sync . "s3://${{ vars.AWS_SITE_BUCKET }}" \
+            --delete \
+            --exclude ".git/*" --exclude ".github/*" \
+            --exclude "CLAUDE.md" --exclude "*.mjs"
+      - name: invalidate the door + console shell
+        if: steps.armed.outputs.armed == 'true'
+        run: |
+          if [ -n "${{ vars.AWS_DISTRIBUTION_ID }}" ]; then
+            aws cloudfront create-invalidation \
+              --distribution-id "${{ vars.AWS_DISTRIBUTION_ID }}" \
+              --paths "/command/*" "/index.html"
+          else
+            echo "AWS_DISTRIBUTION_ID unset — skipping invalidation (caches are short anyway)"
+          fi

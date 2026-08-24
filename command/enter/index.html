@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Atlas Command — Enter</title>
+<style>
+/* The door to the gated console (OPS-32). Deliberately ungated: CloudFront
+   serves /command/enter/* publicly so a person can present their card and
+   receive signed cookies. Self-contained, zero third-party requests at view
+   time — the only fetch this page ever makes is to the estate's own
+   concierge, when a card is actually presented. Palette mirrors the console. */
+:root{
+  --ground:#131315; --panel:#191919; --sunk:#0E0E10; --line:#2C2C2E;
+  --ink:#F4F1E9; --ink2:#C9C5B9; --muted:#8E8B81;
+  --gold:#C8A45C; --gold-dim:#63512A; --gold-wash:rgba(200,164,92,.10);
+  --good:#2FA84F; --serious:#E07A4A;
+  --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:520px;width:100%;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:30px 32px;box-shadow:0 8px 26px rgba(0,0,0,.36)}
+p.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+h1{font-size:24px;font-weight:600;margin:0 0 14px}
+p{font-size:14px;line-height:1.65;color:var(--ink2);margin:0 0 12px}
+p b{color:var(--ink)}
+.state{border-left:3px solid var(--gold);background:var(--gold-wash);
+  border-radius:0 8px 8px 0;padding:11px 14px;font-size:13px;color:var(--ink2);margin:0 0 14px}
+.state.err{border-left-color:var(--serious)}
+.state.ok{border-left-color:var(--good)}
+.row{display:flex;gap:9px;margin:14px 0 0}
+input{flex:1;min-width:0;background:var(--sunk);color:var(--ink);
+  border:1px solid var(--line);border-radius:8px;padding:11px 13px;
+  font-family:var(--mono);font-size:12px}
+input:focus{outline:none;border-color:var(--gold)}
+button{background:var(--gold);color:#12110F;border:0;border-radius:8px;
+  padding:11px 18px;font-weight:600;font-size:14px;cursor:pointer;font-family:var(--body)}
+button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+.fine{font-size:11.5px;color:var(--muted);margin:16px 0 0;line-height:1.6}
+</style>
+</head>
+<body>
+<main class="card">
+  <p class="eyebrow">Atlas Authority · Estate Console</p>
+  <h1>This console is for the practice's own people.</h1>
+  <div class="state" id="state">Checking your access…</div>
+  <p>If Austin sent you an access link, open it — that is the whole sign-in.
+  If the link got mangled by email, paste it here:</p>
+  <div class="row">
+    <input type="text" id="paste" placeholder="paste your access link" aria-label="Paste your access link">
+    <button id="go">Enter</button>
+  </div>
+  <p class="fine">No password exists for this page, by design. Your link is
+  your key: it expires on its own, and Austin can retire it instantly. If you
+  reached this page by accident — this is an operating surface, not a
+  public one, and there is nothing here without a card.</p>
+</main>
+<script>
+"use strict";
+/* One job: card -> cookies -> console. The keyring format and fragment
+   discipline are identical to the console's own (see command/index.html):
+   tokens ride in the fragment (never sent to a server), are stored in this
+   browser only, and are stripped from the address bar on arrival. */
+const KEYRING_KEY = "atlas.keyring";
+/* The concierge origin. Mirrors CONFIG.conciergeApi in command/index.html —
+   null while the backend is undeployed, and this page says so honestly.
+   `let`, not `const`: the deploy edits this line, and the door's end-to-end
+   battery points it at a real service. */
+let CONCIERGE_API = null;
+
+const $state = document.getElementById("state");
+function say(cls, html){ $state.className = "state " + cls; $state.innerHTML = html; }
+
+function b64urlToStr(b){
+  const pad = b.replace(/-/g, "+").replace(/_/g, "/");
+  return decodeURIComponent(escape(atob(pad + "=".repeat((4 - pad.length % 4) % 4))));
+}
+function parseRing(blob){
+  let k = null;
+  try{ k = JSON.parse(b64urlToStr(blob)); }catch(e){ return null; }
+  if(!k || k.v !== 1 || !k.keys || typeof k.keys !== "object") return null;
+  const toks = Object.values(k.keys);
+  if(!toks.length || !toks.every(t => typeof t === "string" && t.split(".").length === 3)) return null;
+  return k;
+}
+function ringExpired(k){
+  try{
+    const exps = Object.values(k.keys).map(t =>
+      JSON.parse(b64urlToStr(t.split(".")[1])).exp * 1000);
+    return Math.max(...exps) <= Date.now();
+  }catch(e){ return true; }
+}
+function storedRing(){
+  try{
+    const k = JSON.parse(localStorage.getItem(KEYRING_KEY) || "null");
+    return (k && !ringExpired(k) && parseRing_ok(k)) ? k : null;
+  }catch(e){ return null; }
+}
+function parseRing_ok(k){
+  return !!(k && k.v === 1 && k.keys && Object.keys(k.keys).length);
+}
+
+async function openGate(ring){
+  if(!CONCIERGE_API){
+    say("err", "<b>The gate's backend is not deployed yet.</b> Your card is fine — " +
+        "the service that turns it into console access (OPS-31/OPS-32 activation) " +
+        "hasn't been switched on. Tell Austin; nothing you did was wrong.");
+    return;
+  }
+  const token = Object.values(ring.keys)[0];
+  say("", "Checking your card…");
+  try{
+    const r = await fetch(CONCIERGE_API.replace(/\/$/, "") + "/v1/concierge/gate", {
+      method: "GET", credentials: "include",
+      headers: {"Authorization": "Bearer " + token}
+    });
+    if(r.status === 401){
+      say("err", "That link is no longer valid — expired or retired. Ask Austin for a fresh one.");
+      return;
+    }
+    if(r.status === 503){
+      say("err", "<b>The gate isn't armed on the backend yet.</b> Your card is fine; tell Austin the gate service reports not-configured.");
+      return;
+    }
+    if(!r.ok){ say("err", "Something refused (" + r.status + "). Nothing was changed — try again, or tell Austin."); return; }
+    say("ok", "Welcome back, <b>" + (ring.name || ring.id || "") + "</b> — opening your console…");
+    setTimeout(() => { location.replace("/command/"); }, 400);
+  }catch(e){
+    say("err", "Could not reach the concierge (" + e.message + "). Nothing was changed.");
+  }
+}
+
+function boot(){
+  const m = /(?:^|[#&])atlas=([A-Za-z0-9_-]+)/.exec(location.hash || "");
+  if(m){
+    history.replaceState(null, "", location.pathname + location.search);
+    const ring = parseRing(m[1]);
+    if(!ring){ say("err", "That link could not be read. Ask Austin to re-send your access card."); return; }
+    if(ringExpired(ring)){ say("err", "That access link has expired — links expire on purpose. Ask Austin for a fresh one."); return; }
+    try{ localStorage.setItem(KEYRING_KEY, JSON.stringify(ring)); }catch(e){}
+    openGate(ring);
+    return;
+  }
+  const ring = storedRing();
+  if(ring){ openGate(ring); return; }
+  say("", "No card presented. Open the access link Austin sent you, or paste it below.");
+}
+
+document.getElementById("go").addEventListener("click", () => {
+  const v = String(document.getElementById("paste").value || "");
+  const m = /atlas=([A-Za-z0-9_-]+)/.exec(v);
+  if(!m){ say("err", "That doesn't look like an access link — it contains “#atlas=”."); return; }
+  location.hash = "atlas=" + m[1];
+  boot();
+});
+document.getElementById("paste").addEventListener("keydown",
+  e => { if(e.key === "Enter") document.getElementById("go").click(); });
+/* Following a card link while the door is ALREADY open changes only the
+   fragment — no reload, so boot() would never re-run. Same defect class the
+   console's battery caught on 2026-08-24; the door gets the same cure. */
+window.addEventListener("hashchange", () => {
+  if(/(?:^|[#&])atlas=/.test(location.hash || "")) boot();
+});
+boot();
+</script>
+</body>
+</html>
