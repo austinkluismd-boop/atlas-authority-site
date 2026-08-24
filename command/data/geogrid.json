@@ -1,0 +1,6 @@
+{
+ "schema": "atlas-geogrid-v1",
+ "state": "awaiting_credential",
+ "note": "Geo-grid rank heatmap (Local Falcon class) runs on the geogrid-tracker component; live scans need the DataForSEO account ($50 deposit \u2014 DFS gate). No scan has been run. A gap is not a zero.",
+ "scans": []
+}

@@ -1,0 +1,77 @@
+{
+ "schema": "atlas-priorities-v1",
+ "captured_at": "2026-08-24",
+ "note": "Ranked by consequence per unit of effort. Owner items name the credential-gated click; engineering items are done or queued in-repo.",
+ "items": [
+  {
+   "rank": 1,
+   "who": "owner",
+   "what": "Click Verify in Google Search Console (OPS-18) + add the service account",
+   "why": "Unlocks 11 gated engine variables and ~16 months of owned search truth. NO BACKFILL \u2014 every day unclicked is permanently lost history.",
+   "effort": "2 minutes"
+  },
+  {
+   "rank": 2,
+   "who": "owner",
+   "what": "Flip the Cloudflare managed robots.txt AI-crawler block OFF + add the Sitemap line (OPS-1)",
+   "why": "9 AI crawlers still disallowed; the AI Visibility pillar is gated on this exact toggle. Oldest overdue P0.",
+   "effort": "2 minutes"
+  },
+  {
+   "rank": 3,
+   "who": "owner",
+   "what": "Back up the causal ledger \u2014 replicate ATLAS_VALIDATION_ARCHIVE off the one Mac",
+   "why": "The append-only intervention ledger exists on one disk. Worst damage-to-effort ratio on the board. Box/Drive replica IDs already recorded in config.",
+   "effort": "~15 minutes"
+  },
+  {
+   "rank": 4,
+   "who": "owner",
+   "what": "Resolve the NAP phone decision (OPS-23): GBP (918) 392-7900 vs site 918-392-0880",
+   "why": "Inconsistent NAP has direct, well-documented local-ranking impact; blocks citation-auditor custody run and the DNI exclusion list.",
+   "effort": "1 decision"
+  },
+  {
+   "rank": 5,
+   "who": "clinician",
+   "what": "Clear the DRAFT_PENDING_CLINICAL_REVIEW corpus queue (TSA 10 + OSA records incl. this session\u2019s build-out) via ATTESTATION.md tick-and-commit",
+   "why": "The only gate between the measurement engine and the live site. Corpus build-out toward 72-page parity is underway; review is the human half.",
+   "effort": "review session"
+  },
+  {
+   "rank": 6,
+   "who": "owner",
+   "what": "Verify domain in Bing Webmaster Tools (OPS-3), claim Bing Places + Apple Business Connect (OPS-19) for both campuses",
+   "why": "Bing feeds ChatGPT/Copilot local answers; Apple feeds Siri/Spotlight/Maps. IndexNow ping path is coded and one env var away.",
+   "effort": "~30 minutes"
+  },
+  {
+   "rank": 7,
+   "who": "owner",
+   "what": "Fix the live wellness page GLP-1 trademark language by hand",
+   "why": "Live regulatory exposure; the new engine gate guards engine output only \u2014 the live page is hand-built.",
+   "effort": "~20 minutes"
+  },
+  {
+   "rank": 8,
+   "who": "owner",
+   "what": "Semrush API entitlement (OPS-22) + add SEMRUSH_API_KEY secret to atlas-authority-site",
+   "why": "Turns this console\u2019s hourly refresh from seed-replay into live pulls; also refreshes the stale authority-score/backlink figures.",
+   "effort": "~10 minutes"
+  },
+  {
+   "rank": 9,
+   "who": "owner",
+   "what": "Publish the estate router update (publish_router.sh) once this session\u2019s redirect work merges",
+   "why": "Closes the remaining legacy-URL families; the KeyValueStore migration removes the 10KB cap permanently.",
+   "effort": "~10 minutes"
+  },
+  {
+   "rank": 10,
+   "who": "owner",
+   "what": "Healthgrades wrong-name fix (OPS-8) + RealSelf claim (OPS-9) + NPPES refresh (OPS-2)",
+   "why": "170 orphaned reviews at 4.8\u2605; RealSelf 3.4\u2605 unclaimed is the weakest surface; NPPES stale since 2007 undermines registry corroboration.",
+   "effort": "~45 minutes"
+  }
+ ]
+}

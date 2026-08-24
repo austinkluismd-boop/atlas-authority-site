@@ -1,0 +1,142 @@
+{
+ "schema": "atlas-engine-coverage-v1",
+ "captured_at": "2026-08-23",
+ "source": "atlas-engine verify/status readout, estate audit 2026-08-23",
+ "variables_total": 86,
+ "coverage": {
+  "flowing": 20,
+  "gated": 42,
+  "stale": 9,
+  "manual_ritual": 7,
+  "no_data_yet": 6,
+  "structural_zero": 2
+ },
+ "note": "42 gated variables cluster behind a small number of unlocks. GA4 is a structural zero by no-BAA doctrine (permanent decision, not a gap).",
+ "gates": [
+  {
+   "gate": "P-002",
+   "unlocks": 11,
+   "action": "Click Verify in Search Console + add the service account. ~16 months of owned search truth. NO BACKFILL \u2014 every unclicked day is permanently lost history.",
+   "ops": "OPS-18"
+  },
+  {
+   "gate": "SIGNATURE_S11",
+   "unlocks": 7,
+   "action": "Lock financial baselines \u2014 unlocks every outcome variable: leads, consults, procedures, revenue, contribution margin.",
+   "ops": null
+  },
+  {
+   "gate": "P-004",
+   "unlocks": 6,
+   "action": "Droplet deploy \u2192 Matomo, server logs, AI-crawler hits, uptime.",
+   "ops": null
+  },
+  {
+   "gate": "P-003",
+   "unlocks": 6,
+   "action": "Read-only Google Ads access \u2192 spend reconciliation + Keyword Planner.",
+   "ops": null
+  },
+  {
+   "gate": "OPS-1",
+   "unlocks": 4,
+   "action": "The robots.txt AI-crawler toggle (Cloudflare managed setting). Two minutes.",
+   "ops": "OPS-1"
+  },
+  {
+   "gate": "DFS/YT/other",
+   "unlocks": 8,
+   "action": "$50 DataForSEO deposit, YouTube key scope, Twilio, BAA forms, schedule component.",
+   "ops": "OPS-22"
+  }
+ ],
+ "tests": {
+  "engine_pytest": "306 passed, 13 skipped (2026-08-24 run, this session)",
+  "stack_verify": "VERIFY: ALL GREEN (2026-08-24 run, this session)",
+  "adversarial": "0 BROKEN across 132 probes (2026-08-23)"
+ },
+ "freshness": {
+  "last_lake_capture": "2026-08-23 (Semrush checkpoint import)",
+  "last_full_daily_ritual": "2026-08-08",
+  "note": "Daily 06:30 snapshot ritual stalled 08-08; partial Semrush refresh 08-23 via sanctioned import. Exports frozen behind partial-root refusal (correct behavior)."
+ },
+ "latest_observations": [
+  {
+   "metric": "semrush.rank",
+   "value": 314575,
+   "provenance": "estimate",
+   "captured_at": "2026-08-23",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "semrush.organic.kw",
+   "value": 3500,
+   "provenance": "estimate",
+   "captured_at": "2026-08-23",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "semrush.organic.traffic",
+   "value": 5311,
+   "provenance": "estimate",
+   "captured_at": "2026-08-23",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "semrush.organic.traffic_cost_usd",
+   "value": 15814,
+   "provenance": "estimate",
+   "captured_at": "2026-08-23",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "gbp.rating",
+   "value": 4.9,
+   "provenance": "measurement",
+   "captured_at": "2026-08-07",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "gbp.reviews",
+   "value": 523,
+   "provenance": "measurement",
+   "captured_at": "2026-08-07",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "crux.lcp_p75_ms",
+   "value": 938,
+   "provenance": "measurement",
+   "captured_at": "2026-08-08",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "crux.inp_p75_ms",
+   "value": 80,
+   "provenance": "measurement",
+   "captured_at": "2026-08-08",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "crux.cls_p75",
+   "value": 0.03,
+   "provenance": "measurement",
+   "captured_at": "2026-08-08",
+   "tenant": "tsa-cuzalina"
+  },
+  {
+   "metric": "gbp.rating",
+   "value": 5.0,
+   "provenance": "measurement",
+   "captured_at": "2026-08-12",
+   "tenant": "osa"
+  },
+  {
+   "metric": "gbp.reviews",
+   "value": 10,
+   "provenance": "measurement",
+   "captured_at": "2026-08-12",
+   "tenant": "osa"
+  }
+ ]
+}
