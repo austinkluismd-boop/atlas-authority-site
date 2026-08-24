@@ -1,0 +1,45 @@
+# Atlas Command hourly feed refresh.
+#
+# Regenerates command/feed.json every hour: replays the committed seeds and,
+# when the repository secrets exist, pulls live figures (SEMRUSH_API_KEY ->
+# Semrush domain_ranks as ESTIMATE; CRUX_PSI_API_KEY -> CrUX field p75s as
+# MEASUREMENT). Successful pulls append to command/data/history.jsonl
+# (append-only) so the console accumulates a real hourly series.
+#
+# Without secrets this still runs and commits only when content changed —
+# the page then honestly shows "awaiting credential" states.
+name: command-feed
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: command-feed
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Build feed
+        env:
+          SEMRUSH_API_KEY: ${{ secrets.SEMRUSH_API_KEY }}
+          CRUX_PSI_API_KEY: ${{ secrets.CRUX_PSI_API_KEY }}
+        run: python3 command/build_feed.py
+      - name: Commit if changed
+        run: |
+          git config user.name "atlas-command-feed"
+          git config user.email "actions@users.noreply.github.com"
+          # feed.json changes every run (generated_at). Commit only when the
+          # DATA changed: history grew, or a seed/live figure moved.
+          if git diff --quiet -- command/data/history.jsonl && \
+             git diff --ignore-matching-lines='"generated_at"' --quiet -- command/feed.json; then
+            echo "no data change — skipping commit (generated_at-only delta)"
+            git checkout -- command/feed.json
+          else
+            git add command/feed.json command/data/history.jsonl
+            git commit -m "command feed: hourly refresh"
+            git push
+          fi
