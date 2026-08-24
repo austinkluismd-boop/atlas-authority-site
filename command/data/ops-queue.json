@@ -228,6 +228,51 @@
    "due": "2026-08-29",
    "status": "open",
    "priority": "P1"
+  },
+  {
+   "id": "OPS-26",
+   "title": "Claim Bing Places for Business \u2014 BOTH campuses (TSA + OSA). Bing feeds Copilot/ChatGPT local answers; runbook W2-5's Bing half. IndexNow key file is committed engine-side; live ping needs the key file at the live site root too.",
+   "spec": "W2-5",
+   "owner": "Austin",
+   "due": "2026-08-28",
+   "status": "open",
+   "priority": "P1"
+  },
+  {
+   "id": "OPS-27",
+   "title": "Apple Business Connect: extend the OPS-19 claim to the OSA campus (OPS-19 names only TSA + Bella Roma; OPS_CONSOLIDATION_RUNBOOK W2-5 says both campuses).",
+   "spec": "W2-5",
+   "owner": "Austin",
+   "due": "2026-08-28",
+   "status": "open",
+   "priority": "P1"
+  },
+  {
+   "id": "OPS-28",
+   "title": "Atlas Command live feed: add SEMRUSH_API_KEY + CRUX_PSI_API_KEY repository secrets to atlas-authority-site (Actions hourly cron is armed and degrades honestly without them); top up Semrush API units at semrush.com/mcp-access (OPS-22 twin) \u2014 also un-stales the 08-08 authority-score/backlink figures.",
+   "spec": "CMD-1",
+   "owner": "Austin",
+   "due": "2026-08-27",
+   "status": "open",
+   "priority": "P1"
+  },
+  {
+   "id": "OPS-29",
+   "title": "Router: after the practice-stack PR merges, run publish_router.sh (both) for the new families; then the KVS cutover per ops/aws/router-census/2026-08-23.md \u00a77 (create KeyValueStore, import tsa-legacy-map.json, KVS_CUTOVER=1 publish) to close the ~50-path remainder for good.",
+   "spec": "A8",
+   "owner": "Austin",
+   "due": "2026-08-30",
+   "status": "open",
+   "priority": "P1"
+  },
+  {
+   "id": "OPS-30",
+   "title": "Port the Estate Concierge (tsa-estate-staging PR: assets/css/concierge.css + assets/js/concierge*.js + include lines + OSA JSON-LD medicalSpecialty fix) onto the live tree and ship via ops/aws/ship_estate.sh \u2014 replaces the unreadable generic chat helper on the live sites.",
+   "spec": "E9",
+   "owner": "Austin",
+   "due": "2026-08-30",
+   "status": "open",
+   "priority": "P1"
   }
  ]
 }
