@@ -152,6 +152,33 @@ tr:last-child td{border-bottom:0}
 
 /* tenant selector (top right) */
 .tsel{position:relative;margin-left:auto}
+.who{margin-left:auto}
+.who + .tsel{margin-left:10px}
+.who-menu{min-width:380px;padding:14px 15px;font-size:12.5px;color:var(--ink2);
+  line-height:1.55;cursor:default}
+.who-menu h4{margin:0 0 6px;font-size:13px;color:var(--gold);font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase}
+.who-menu p{margin:0 0 9px}
+.who-menu .who-row{display:flex;gap:8px;align-items:center;margin:0 0 9px;flex-wrap:wrap}
+.who-menu input{flex:1 1 210px;min-width:0;background:var(--bg);color:var(--ink);
+  border:1px solid var(--line);border-radius:6px;padding:7px 9px;
+  font-family:var(--mono);font-size:11px}
+.who-menu input:focus{outline:none;border-color:var(--gold)}
+.who-menu button.act{background:var(--gold-wash);color:var(--gold);
+  border:1px solid var(--gold);border-radius:6px;padding:7px 12px;font-size:12px;
+  font-weight:600;cursor:pointer;width:auto;display:inline-block;text-align:center}
+.who-menu button.act:hover{background:var(--gold);color:#12110F}
+.who-menu button.quiet{background:transparent;color:var(--muted);
+  border:1px solid var(--line);border-radius:6px;padding:7px 12px;font-size:12px;
+  cursor:pointer;width:auto;display:inline-block;text-align:center}
+.who-menu .who-err{color:#E07A4A;font-size:11.5px;margin:0 0 8px}
+.who-menu .who-t{display:flex;justify-content:space-between;gap:10px;
+  border-top:1px solid var(--line);padding:6px 0;font-size:12px}
+.who-menu .who-t:last-of-type{border-bottom:1px solid var(--line)}
+.who-menu .who-t b{color:var(--ink);font-weight:600}
+.ask-you{background:var(--gold-wash);border:1px solid var(--gold);border-radius:8px;
+  padding:11px 13px;margin:0 0 12px;font-size:12.5px;color:var(--ink2)}
+.ask-you b{color:var(--gold)}
 .tsel-btn{display:flex;align-items:center;gap:10px;background:var(--panel);
   border:1px solid var(--gold-dim);border-radius:3px;padding:9px 14px;cursor:pointer;
   font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink)}
@@ -270,6 +297,12 @@ tr:last-child td{border-bottom:0}
     <a href="https://austinkluismd-boop.github.io/tsa-command-center/group/" rel="noopener">group console ↗</a>
     <a href="https://tulsasurgicalarts.com" rel="noopener">tulsasurgicalarts.com ↗</a>
     <a href="https://oklahomasurgicalarts.com" rel="noopener">oklahomasurgicalarts.com ↗</a>
+  </div>
+  <div class="tsel who" id="who">
+    <button class="tsel-btn" id="who-btn" aria-haspopup="dialog" aria-expanded="false">
+      <span class="car">ACCESS</span> <b id="who-current">PUBLIC VIEW</b> <span class="car">▾</span>
+    </button>
+    <div class="tsel-menu who-menu" id="who-menu" role="dialog" aria-label="Console access"></div>
   </div>
   <div class="tsel" id="tsel">
     <button class="tsel-btn" id="tsel-btn" aria-haspopup="listbox" aria-expanded="false">
@@ -427,6 +460,166 @@ async function load(){
 }
 setInterval(load, 5 * 60 * 1000);
 
+/* ---------- who: per-person access, by link, no password ----------
+   A person opens the link their access card carries:
+       .../command/#atlas=<base64url({v,id,name,exp,keys:{tenant:jwt}})>
+   The keyring rides in the FRAGMENT — fragments are never sent to a server,
+   so the tokens stay out of access logs and Referer headers. We store it in
+   this browser, strip it from the address bar, and never send it anywhere
+   except the estate's own concierge API, and then only when the person acts.
+   No fetch happens at view time: page load stays zero-request (console law 5).
+
+   One token per tenant, because the identity contract says a token names
+   EXACTLY ONE tenant. A person who belongs to four practices carries four
+   keys on one ring and one link — that is what makes it simple for them. */
+const KEYRING_KEY = "atlas.keyring";
+let SESSION = null;
+let WHO_ERR = "";
+
+function b64urlToStr(b){
+  const pad = b.replace(/-/g, "+").replace(/_/g, "/");
+  return decodeURIComponent(escape(atob(pad + "=".repeat((4 - pad.length % 4) % 4))));
+}
+function jwtClaims(tok){            /* DISPLAY ONLY — unverified on purpose.
+                                       The service verifies every token; the
+                                       browser just reads the label. */
+  try{ return JSON.parse(b64urlToStr(String(tok).split(".")[1])); }
+  catch(e){ return null; }
+}
+function validKeyring(k){
+  if(!k || typeof k !== "object" || k.v !== 1) return false;
+  if(typeof k.id !== "string" || !k.id) return false;
+  if(!k.keys || typeof k.keys !== "object") return false;
+  const ts = Object.keys(k.keys);
+  if(!ts.length) return false;
+  return ts.every(t => typeof k.keys[t] === "string" &&
+                       k.keys[t].split(".").length === 3 &&
+                       jwtClaims(k.keys[t]));
+}
+function keyExp(tok){ const c = jwtClaims(tok); return c && c.exp ? c.exp * 1000 : 0; }
+function sessionExpiry(){
+  if(!SESSION) return 0;
+  return Math.max(...Object.values(SESSION.keys).map(keyExp));
+}
+function tokenFor(slug){ return SESSION && SESSION.keys[slug] || null; }
+function roleFor(slug){
+  const c = jwtClaims(tokenFor(slug) || "");
+  return c && c.role || null;
+}
+function myTenants(){ return SESSION ? Object.keys(SESSION.keys) : []; }
+
+function saveSession(k){
+  SESSION = k;
+  try{ localStorage.setItem(KEYRING_KEY, JSON.stringify(k)); }catch(e){}
+}
+function signOut(){
+  SESSION = null;
+  try{ localStorage.removeItem(KEYRING_KEY); }catch(e){}
+  renderWho(); renderAsk(); buildSelector();
+}
+function adoptBlob(blob){
+  let k = null;
+  try{ k = JSON.parse(b64urlToStr(blob)); }catch(e){ k = null; }
+  if(!validKeyring(k)){
+    WHO_ERR = "That link or token could not be read. Ask Austin to re-send your access card.";
+    return false;
+  }
+  if(sessionExpiryOf(k) <= Date.now()){
+    WHO_ERR = "That access link has expired. Ask Austin for a fresh one — links expire on purpose.";
+    return false;
+  }
+  WHO_ERR = ""; saveSession(k); return true;
+}
+function sessionExpiryOf(k){
+  return Math.max(...Object.values(k.keys).map(keyExp));
+}
+function captureLink(){
+  const m = /(?:^|[#&])atlas=([A-Za-z0-9_-]+)/.exec(location.hash || "");
+  if(!m) return;
+  adoptBlob(m[1]);
+  /* strip the keyring out of the address bar: it must not sit in history,
+     a screenshot, or a shoulder-surf. */
+  history.replaceState(null, "", location.pathname + location.search);
+}
+/* Following your link while the console is ALREADY open changes only the
+   fragment — the browser does not reload, so nothing would have run. Found
+   by the browser battery, 2026-08-24: sign-in must work from a warm tab too,
+   because that is exactly how someone re-opens a link they were sent. */
+window.addEventListener("hashchange", () => {
+  if(!/(?:^|[#&])atlas=/.test(location.hash || "")) return;
+  captureLink();
+  renderWho(); renderAsk(); buildSelector();
+});
+
+function restoreSession(){
+  try{
+    const raw = localStorage.getItem(KEYRING_KEY);
+    if(!raw) return;
+    const k = JSON.parse(raw);
+    if(validKeyring(k) && sessionExpiryOf(k) > Date.now()) SESSION = k;
+    else localStorage.removeItem(KEYRING_KEY);
+  }catch(e){}
+}
+
+function renderWho(){
+  const btn = $("#who-current"), menu = $("#who-menu");
+  const comp = slug => (compOf(slug) || {}).name || slug;
+  if(SESSION){
+    btn.textContent = (SESSION.name || SESSION.id).toUpperCase();
+    const days = Math.max(0, Math.round((sessionExpiry() - Date.now()) / 86400000));
+    menu.innerHTML = `
+      <h4>Signed in</h4>
+      <p><b style="color:var(--ink)">${esc(SESSION.name || SESSION.id)}</b> — this browser
+      remembers your access. Your link expires in <b style="color:var(--ink)">${days}</b>
+      day${days === 1 ? "" : "s"}; ask Austin for a fresh one then.</p>
+      ${myTenants().map(t => `<div class="who-t"><span>${esc(comp(t))}</span>
+        <b>${esc(roleFor(t) || "—")}</b></div>`).join("")}
+      <p style="margin-top:10px">Your role decides what Ask Atlas will do for you.
+      Everything you request is a <b style="color:var(--ink)">proposal</b> — the estate's
+      checks and Austin run before anything goes live.</p>
+      <div class="who-row"><button class="quiet" id="who-out">Sign out of this browser</button></div>`;
+    menu.querySelector("#who-out").addEventListener("click", signOut);
+  }else{
+    btn.textContent = "PUBLIC VIEW";
+    menu.innerHTML = `
+      <h4>Sign in</h4>
+      ${WHO_ERR ? `<p class="who-err">${esc(WHO_ERR)}</p>` : ""}
+      <p>Open the access link Austin sent you — that is the whole sign-in.
+      There is no password to remember.</p>
+      <p>If the link got mangled by email, paste it here instead:</p>
+      <div class="who-row">
+        <input type="text" id="who-paste" placeholder="paste your access link" aria-label="Paste your access link">
+        <button class="act" id="who-go">Sign in</button>
+      </div>
+      <p style="font-size:11.5px;color:var(--muted);margin:0">The figures on this page are
+      the estate's shared read-out. Signing in is what opens <b style="color:var(--ink)">Ask
+      Atlas</b> for your practice.</p>`;
+    const go = () => {
+      const v = String(menu.querySelector("#who-paste").value || "");
+      const m = /atlas=([A-Za-z0-9_-]+)/.exec(v);
+      if(!m){ WHO_ERR = "That doesn't look like an access link — it contains “#atlas=”."; }
+      else if(adoptBlob(m[1])){ renderWho(); renderAsk(); buildSelector();
+        $("#who-menu").classList.remove("open");
+        $("#who-btn").setAttribute("aria-expanded", "false"); return; }
+      renderWho();
+      $("#who-menu").classList.add("open");
+    };
+    menu.querySelector("#who-go").addEventListener("click", go);
+    menu.querySelector("#who-paste").addEventListener("keydown",
+      e => { if(e.key === "Enter") go(); });
+  }
+}
+$("#who-btn").addEventListener("click", () => {
+  const open = $("#who-menu").classList.toggle("open");
+  $("#who-btn").setAttribute("aria-expanded", String(open));
+});
+document.addEventListener("click", e => {
+  if(!$("#who").contains(e.target)){
+    $("#who-menu").classList.remove("open");
+    $("#who-btn").setAttribute("aria-expanded", "false");
+  }
+});
+
 /* ---------- tenant selector ---------- */
 function components(){ return FEED?.tenants?.components || []; }
 function compOf(slug){ return components().find(c => c.slug === slug) || null; }
@@ -443,10 +636,12 @@ function selectTenant(slug){
 
 function buildSelector(){
   const menu = $("#tsel-menu");
+  const mine = myTenants();
   menu.innerHTML = components().map(c => `
     <button role="option" data-slug="${esc(c.slug)}" aria-current="${String(c.slug === TENANT)}">
       <span class="tn">${esc(c.name)}
-        <span class="chip ${c.status === "live" ? "ok" : "wait"}">${c.status === "live" ? "live" : "pre-launch"}</span></span>
+        <span class="chip ${c.status === "live" ? "ok" : "wait"}">${c.status === "live" ? "live" : "pre-launch"}</span>
+        ${mine.includes(c.slug) ? `<span class="chip ok">your access · ${esc(roleFor(c.slug) || "")}</span>` : ""}</span>
       <span class="tt">${esc(c.tagline || "")}</span>
     </button>`).join("");
   menu.querySelectorAll("button").forEach(b =>
@@ -500,6 +695,7 @@ function render(){
   $("#disclaimer").textContent = FEED.disclaimer || "";
   $("#baseline-schema").textContent = baselineTenant()?.schema || "";
   buildSelector();
+  renderWho();
   const c = compOf(TENANT);
   const isEstate = TENANT === "estate";
   const isPre = !!c && c.status === "pre_launch";
@@ -599,19 +795,97 @@ function renderStudio(){
     : `<div class="empty-state">No suggestions on file for this component yet — its baseline freeze comes first.</div>`;
 }
 
-/* ---------- ask atlas (concierge) ---------- */
+/* ---------- ask atlas (concierge) ----------
+   Three honest states, never a fourth:
+     • nobody signed in      -> say so, and how to sign in
+     • signed in, no backend -> say exactly that; never simulate a chat
+     • signed in + backend   -> a live input bound to THEIR token for THIS
+                                component
+   The only request this panel ever makes is to the estate's own concierge
+   API, in response to a person clicking Ask. Never on load. */
+const ROLE_CAN = {
+  principal: "everything the console offers for this practice",
+  marketing: "content, photos, social posts, and social account setup",
+  editor:    "website copy and photos",
+  viewer:    "read-only — status, suggestions, and previews"
+};
+
+function askScope(){
+  const c = compOf(TENANT);
+  return TENANT === "estate" ? "the whole estate" : (c ? c.name : TENANT);
+}
+
+async function askAtlas(question, host){
+  const token = tokenFor(TENANT);
+  const out = host.querySelector("#ask-out");
+  if(!CONFIG.conciergeApi || !token) return;
+  out.textContent = "Asking…";
+  try{
+    const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/ask", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Authorization": "Bearer " + token},
+      body: JSON.stringify({message: question})
+    });
+    const doc = await r.json().catch(() => ({}));
+    if(r.status === 401){
+      out.textContent = "Your access link is no longer valid. Ask Austin for a fresh one.";
+      return;
+    }
+    if(!r.ok){
+      out.textContent = (doc.detail || doc.error || ("HTTP " + r.status)) +
+        " — nothing was changed.";
+      return;
+    }
+    out.textContent = doc.answer || "";
+    if(doc.proposals && doc.proposals.length){
+      out.textContent += "\n\nQueued as proposal(s): " + doc.proposals.join(", ") +
+        " — the gates and Austin run before anything ships.";
+    }
+  }catch(e){
+    out.textContent = "Could not reach the concierge: " + e.message +
+      " — nothing was changed.";
+  }
+}
+
 function renderAsk(){
   const host = $("#ask-panel");
-  const c = compOf(TENANT);
-  const scope = TENANT === "estate" ? "the whole estate" : (c ? c.name : TENANT);
-  const live = !!CONFIG.conciergeApi;
+  const scope = askScope();
+  const backend = !!CONFIG.conciergeApi;
+  const token = tokenFor(TENANT);
+  const role = roleFor(TENANT);
+  const live = backend && !!token;
+
+  const state = !SESSION ? "out" : (!token ? "nokey" : (backend ? "live" : "staged"));
+  const chip = {
+    out:    ['wait', 'sign in to use'],
+    nokey:  ['wait', 'not your practice'],
+    staged: ['wait', 'activation pending'],
+    live:   ['ok',   'connected']
+  }[state];
+
+  const you = {
+    out: `<div class="ask-you">This console's figures are the estate's shared read-out.
+      <b>Ask Atlas</b> opens when you sign in — use the access link Austin sent you
+      (top right). No password, nothing to remember.</div>`,
+    nokey: `<div class="ask-you">You're signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b>,
+      but your card doesn't cover <b>${esc(scope)}</b>. Pick a practice you have access to
+      in the selector, or ask Austin to add this one.</div>`,
+    staged: `<div class="ask-you">You're signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b> —
+      <b>${esc(role || "")}</b> on <b>${esc(scope)}</b>, which means ${esc(ROLE_CAN[role] || "your assigned scope")}.
+      Your access is ready; the concierge backend is not deployed yet, so this panel stays
+      honestly dark rather than pretending to answer.</div>`,
+    live: `<div class="ask-you">Signed in as <b>${esc(SESSION ? (SESSION.name || SESSION.id) : "")}</b> —
+      <b>${esc(role || "")}</b> on <b>${esc(scope)}</b>: ${esc(ROLE_CAN[role] || "your assigned scope")}.</div>`
+  }[state];
+
   host.innerHTML = `
     <div class="ask-head"><h3>Atlas Concierge</h3>
-      <span class="chip ${live ? "ok" : "wait"}">${live ? "connected" : "activation pending"}</span>
+      <span class="chip ${chip[0]}">${chip[1]}</span>
       <span class="chip dim">scope: ${esc(scope)}</span></div>
     <div class="ask-body">
       <div class="ask-can">
-        <b>What this does, once your access is provisioned:</b>
+        ${you}
+        <b>What this does:</b>
         <ul>
           <li><b>Ask anything</b> about your numbers, your pages, your reviews — answered live from the engine's measurements.</li>
           <li><b>Request site updates</b> — copy, photos, new content. Your request becomes a change proposal that runs the estate's quality gates (medical-claims, terminology, provenance) before anything ships. If it fits, it ships; if it doesn't, you'll see exactly why.</li>
@@ -621,22 +895,42 @@ function renderAsk(){
         <p class="ask-flow">The engine and the coding stay with Atlas — you pick the colors, the interior, the rims.
         Every change is checked for fit before it goes on the car, so it can only ever make it better.</p>
         <div class="ask-input">
-          <input type="text" placeholder="${live ? "Ask about " + esc(scope) + "…" : "Activation pending — see the right panel"}" ${live ? "" : "disabled"} aria-label="Ask Atlas">
-          <button ${live ? "" : "disabled"}>Ask</button>
+          <input type="text" id="ask-q" placeholder="${live ? "Ask about " + esc(scope) + "…" : (state === "out" ? "Sign in to ask" : "Activation pending — see the right panel")}" ${live ? "" : "disabled"} aria-label="Ask Atlas">
+          <button id="ask-go" ${live ? "" : "disabled"}>Ask</button>
         </div>
+        <pre id="ask-out" style="white-space:pre-wrap;font-family:var(--mono);font-size:12px;
+          color:var(--ink2);margin:10px 0 0"></pre>
         <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Please don't include personal health details —
         this concierge works the marketing plane only.</p>
       </div>
       <div>
-        <div class="ask-gate"><b>Activation pending.</b> The concierge backend
-        (Claude on Amazon Bedrock, driving the estate's gated change pipeline) is staged in the
-        platform and deploys with your client credentials. Until then this panel stays honestly dark —
-        no simulated chat. Architecture: docs/CLIENT_CONSOLE_ARCHITECTURE.md.</div>
+        <div class="ask-gate">${backend
+          ? `<b>Connected.</b> Every answer is read live from the engine; every change you ask
+             for becomes a proposal in the estate's gated pipeline. Nothing you click here can
+             publish by itself — that is the point.`
+          : `<b>Activation pending.</b> The concierge backend
+             (Claude on Amazon Bedrock, driving the estate's gated change pipeline) is staged in the
+             platform and deploys with your client credentials. Until then this panel stays honestly dark —
+             no simulated chat. Architecture: docs/CLIENT_CONSOLE_ARCHITECTURE.md.`}</div>
         <p class="ask-flow">how a request travels:<br>
         you ask → Claude (Bedrock) answers or drafts → drafts become <b>change proposals</b> →
         the estate's gates check fit → Atlas approves → it ships → you see it here, measured.</p>
+        <p class="ask-flow">who can do what: <b>principal</b> everything ·
+        <b>marketing</b> content, photos, social · <b>editor</b> copy and photos ·
+        <b>viewer</b> read-only. Nobody — including Atlas, from here — can touch
+        infrastructure, credentials, another practice's data, or clinical approval.</p>
       </div>
     </div>`;
+
+  if(live){
+    const go = () => {
+      const q = String(host.querySelector("#ask-q").value || "").trim();
+      if(q) askAtlas(q, host);
+    };
+    host.querySelector("#ask-go").addEventListener("click", go);
+    host.querySelector("#ask-q").addEventListener("keydown",
+      e => { if(e.key === "Enter") go(); });
+  }
 }
 
 function deltaHtml(seriesId, goodWhen){
@@ -971,6 +1265,9 @@ function demoGrid(){
     <p style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px">7×7 lattice · renders when the first real scan lands</p>`;
 }
 
+captureLink();
+restoreSession();
+renderWho();
 load();
 </script>
 </body>
