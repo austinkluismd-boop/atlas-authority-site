@@ -1,278 +1,305 @@
 {
- "schema": "atlas-ops-queue-v1",
- "source": "practice-stack ops-tasks/tasks.json",
- "captured_at": "2026-08-24",
- "note": "Human/vendor acts no software can perform \u2014 the launch queue's operational half, surfaced on mission-control so it cannot rot in a document. Statuses are DECLARATIONS by the operator (real state, not synthesized): open | in-progress | blocked | done.",
- "tasks": [
-  {
-   "id": "OPS-1",
-   "title": "Cloudflare (zone OWNED): flip managed robots.txt AI-block OFF + add Sitemap line. RE-CONFIRMED 08-07T22:38Z: 9 AI agents still disallowed (managed block). ALSO: origin unstable tonight (2/3 PSI runs time out post-incident) \u2014 uptime monitor deploy escalated",
-   "spec": "A6",
-   "owner": "Austin",
-   "due": "2026-08-08",
-   "status": "in-progress",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-2",
-   "title": "NPPES NPI 1376625830: add other-name 'Angelo Cuzalina' + MD taxonomy (record stale since 2007)",
-   "spec": "C2",
-   "owner": "Dr. C",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-3",
-   "title": "Verify domain in Google Search Console + Bing Webmaster Tools (DNS TXT), submit sitemaps",
-   "spec": "B6",
-   "owner": "Austin",
-   "due": "2026-08-12",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-4",
-   "title": "Oklahoma medical-board advertising review: before/afters, testimonials, board-certified claims",
-   "spec": "G7",
-   "owner": "Counsel",
-   "due": "2026-09-01",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-5",
-   "title": "Sign BAA form/intake vendor (JotForm HIPAA tier is shortest path) \u2014 form ships only after",
-   "spec": "E2",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-6",
-   "title": "Wire EHR/PM hosted booking URL (never Calendly-class); resolve NexHealth P5b gating question in writing",
-   "spec": "E4",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-7",
-   "title": "Request Google Business Profile API access (G4/I3 residuals)",
-   "spec": "G4",
-   "owner": "Austin",
-   "due": "2026-09-01",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-8",
-   "title": "Healthgrades: correct 'Lawrence Cuzalina, DDS' listing to practice name (170 reviews, 4.8 star orphaned)",
-   "spec": "C2",
-   "owner": "Austin",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-9",
-   "title": "Claim + verify RealSelf profile (3.4 star, unclaimed \u2014 weakest surface)",
-   "spec": "H5",
-   "owner": "Dr. C",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-10",
-   "title": "Merge duplicate SRC listings (lawrence-angelo-cuzalina-md + dr-angelo-cuzalina)",
-   "spec": "C2",
-   "owner": "Austin",
-   "due": "2026-08-29",
-   "status": "open",
-   "priority": "P2"
-  },
-  {
-   "id": "OPS-11",
-   "title": "Report Elsevier/Amazon 'Angela Cuzalina' misspelling on 2012 guest-edited volume",
-   "spec": "C2",
-   "owner": "Austin",
-   "due": "2026-08-29",
-   "status": "open",
-   "priority": "P2"
-  },
-  {
-   "id": "OPS-12",
-   "title": "Pull GSC indexed-URL export + Wayback CDX for both hosts \u2192 complete redirects.json input",
-   "spec": "A8",
-   "owner": "Austin",
-   "due": "2026-08-12",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-13",
-   "title": "Dr. C attests ONE career procedure count (10k/14k/17k/18k live simultaneously) + breast-aug count",
-   "spec": "D3",
-   "owner": "Dr. C",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-14",
-   "title": "Register bellaromamedspa.com + tsawellness.com (or preferred), flip registered:true in entity-web config",
-   "spec": "FW",
-   "owner": "Austin",
-   "due": "2026-08-12",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-15",
-   "title": "Export Magento catalog (~35 SKUs + packages + Bella Club) \u2014 storefront prerequisite either path",
-   "spec": "FW",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-16",
-   "title": "Paste Wikidata QuickStatements (person, then org), return QIDs to config",
-   "spec": "C9",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-17",
-   "title": "Fellowship inception year + cumulative fellows trained (unlocks the 1-of-16 story's numbers)",
-   "spec": "D3",
-   "owner": "Dr. C",
-   "due": "2026-08-29",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-18",
-   "title": "Click GSC Verify + add SA as user + enable Generative-AI report (NO BACKFILL). STATE CHANGE 08-07T22:38Z: required K_DY\u2026 TXT NOW OBSERVED IN DNS (DoH) \u2014 first half done; foreign BFXT\u2026 TXT still present (OPS-24)",
-   "spec": "MEASURE-06",
-   "owner": "Austin",
-   "due": "2026-08-10",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-19",
-   "title": "Claim Apple Business Connect place card (TSA + Bella Roma); decide Maps Ads posture after baseline (LOCAL-07)",
-   "spec": "LOCAL-07",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-20",
-   "title": "Claim + dedupe Yelp listings (3 exist per dossier) \u2014 Yelp is licensed AI supply; solicitation stays banned and stays OUT of ask-routing (AUTH-04)",
-   "spec": "AUTH-04",
-   "owner": "Austin",
-   "due": "2026-08-22",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-21",
-   "title": "GBP defense pack: enable edit-diff monitoring, create/claim practitioner listings for all surgeons, pre-build suspension recovery dossier + extortion response playbook (LOCAL-08)",
-   "spec": "LOCAL-08",
-   "owner": "Austin + next build session (gbp-guard)",
-   "due": "2026-08-29",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-22",
-   "title": "Semrush API entitlement: Subscription info \u2192 API units (classic key \u2192 SEMRUSH_API_KEY_CLASSIC) and/or API add-on so the v4 PAT activates; then rotate the PAT",
-   "spec": "COMPETITIVE",
-   "owner": "Austin",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P2"
-  },
-  {
-   "id": "OPS-23",
-   "title": "NAP number decision (LOCAL-02): GBP listing shows (918) 392-7900 but site NAP is 918-392-0880 \u2014 likely Yext tracked number. Pick ONE canonical number for GBP+site+citations; DNI pool excludes it; kill Yext UTM/tracking remnants deliberately",
-   "spec": "LOCAL-02",
-   "owner": "Austin + Dr. C",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P0"
-  },
-  {
-   "id": "OPS-24",
-   "title": "Audit the FOREIGN google-site-verification TXT (BFXT\u2026) on tulsasurgicalarts.com after GSC verify \u2014 identifies who else holds Search Console domain claim (agency?); revoke or document",
-   "spec": "MEASURE-06",
-   "owner": "Austin",
-   "due": "2026-08-15",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-25",
-   "title": "Social live-mode onboarding: register Meta app (App Review: read_insights, instagram_manage_insights, threads_basic), TikTok Login Kit app, Reddit script app; set YOUTUBE_API_KEY + X bearer; run `social-tracker cli.py authorize` per provider, add provider_ids to the tenant credential registry; install weekly launchd sync (social-tracker/launchd/com.practicestack.social-sync.plist). LinkedIn/Snapchat/TruthSocial stay manual-cadence (`manual` verb)",
-   "spec": "SOCIAL-LIVE",
-   "owner": "Austin",
-   "due": "2026-08-29",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-26",
-   "title": "Claim Bing Places for Business \u2014 BOTH campuses (TSA + OSA). Bing feeds Copilot/ChatGPT local answers; runbook W2-5's Bing half. IndexNow key file is committed engine-side; live ping needs the key file at the live site root too.",
-   "spec": "W2-5",
-   "owner": "Austin",
-   "due": "2026-08-28",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-27",
-   "title": "Apple Business Connect: extend the OPS-19 claim to the OSA campus (OPS-19 names only TSA + Bella Roma; OPS_CONSOLIDATION_RUNBOOK W2-5 says both campuses).",
-   "spec": "W2-5",
-   "owner": "Austin",
-   "due": "2026-08-28",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-28",
-   "title": "Atlas Command live feed: add SEMRUSH_API_KEY + CRUX_PSI_API_KEY repository secrets to atlas-authority-site (Actions hourly cron is armed and degrades honestly without them); top up Semrush API units at semrush.com/mcp-access (OPS-22 twin) \u2014 also un-stales the 08-08 authority-score/backlink figures.",
-   "spec": "CMD-1",
-   "owner": "Austin",
-   "due": "2026-08-27",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-29",
-   "title": "Router: after the practice-stack PR merges, run publish_router.sh (both) for the new families; then the KVS cutover per ops/aws/router-census/2026-08-23.md \u00a77 (create KeyValueStore, import tsa-legacy-map.json, KVS_CUTOVER=1 publish) to close the ~50-path remainder for good.",
-   "spec": "A8",
-   "owner": "Austin",
-   "due": "2026-08-30",
-   "status": "open",
-   "priority": "P1"
-  },
-  {
-   "id": "OPS-30",
-   "title": "Port the Estate Concierge (tsa-estate-staging PR: assets/css/concierge.css + assets/js/concierge*.js + include lines + OSA JSON-LD medicalSpecialty fix) onto the live tree and ship via ops/aws/ship_estate.sh \u2014 replaces the unreadable generic chat helper on the live sites.",
-   "spec": "E9",
-   "owner": "Austin",
-   "due": "2026-08-30",
-   "status": "open",
-   "priority": "P1"
-  }
- ]
+  "schema": "atlas-ops-queue-v1",
+  "source": "practice-stack ops-tasks/tasks.json",
+  "captured_at": "2026-08-24",
+  "note": "Human/vendor acts no software can perform — the launch queue's operational half, surfaced on mission-control so it cannot rot in a document. Statuses are DECLARATIONS by the operator (real state, not synthesized): open | in-progress | blocked | done. Regenerated 2026-08-24 from practice-stack ops-tasks/tasks.json (33 rows) in the same change set as the code it describes.",
+  "tasks": [
+    {
+      "id": "OPS-1",
+      "title": "Cloudflare (zone OWNED): flip managed robots.txt AI-block OFF + add Sitemap line. RE-CONFIRMED 08-07T22:38Z: 9 AI agents still disallowed (managed block). ALSO: origin unstable tonight (2/3 PSI runs time out post-incident) — uptime monitor deploy escalated",
+      "spec": "A6",
+      "owner": "Austin",
+      "due": "2026-08-08",
+      "status": "in-progress",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-2",
+      "title": "NPPES NPI 1376625830: add other-name 'Angelo Cuzalina' + MD taxonomy (record stale since 2007)",
+      "spec": "C2",
+      "owner": "Dr. C",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-3",
+      "title": "Verify domain in Google Search Console + Bing Webmaster Tools (DNS TXT), submit sitemaps",
+      "spec": "B6",
+      "owner": "Austin",
+      "due": "2026-08-12",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-4",
+      "title": "Oklahoma medical-board advertising review: before/afters, testimonials, board-certified claims",
+      "spec": "G7",
+      "owner": "Counsel",
+      "due": "2026-09-01",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-5",
+      "title": "Sign BAA form/intake vendor (JotForm HIPAA tier is shortest path) — form ships only after",
+      "spec": "E2",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-6",
+      "title": "Wire EHR/PM hosted booking URL (never Calendly-class); resolve NexHealth P5b gating question in writing",
+      "spec": "E4",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-7",
+      "title": "Request Google Business Profile API access (G4/I3 residuals)",
+      "spec": "G4",
+      "owner": "Austin",
+      "due": "2026-09-01",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-8",
+      "title": "Healthgrades: correct 'Lawrence Cuzalina, DDS' listing to practice name (170 reviews, 4.8 star orphaned)",
+      "spec": "C2",
+      "owner": "Austin",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-9",
+      "title": "Claim + verify RealSelf profile (3.4 star, unclaimed — weakest surface)",
+      "spec": "H5",
+      "owner": "Dr. C",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-10",
+      "title": "Merge duplicate SRC listings (lawrence-angelo-cuzalina-md + dr-angelo-cuzalina)",
+      "spec": "C2",
+      "owner": "Austin",
+      "due": "2026-08-29",
+      "status": "open",
+      "priority": "P2"
+    },
+    {
+      "id": "OPS-11",
+      "title": "Report Elsevier/Amazon 'Angela Cuzalina' misspelling on 2012 guest-edited volume",
+      "spec": "C2",
+      "owner": "Austin",
+      "due": "2026-08-29",
+      "status": "open",
+      "priority": "P2"
+    },
+    {
+      "id": "OPS-12",
+      "title": "Pull GSC indexed-URL export + Wayback CDX for both hosts → complete redirects.json input",
+      "spec": "A8",
+      "owner": "Austin",
+      "due": "2026-08-12",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-13",
+      "title": "Dr. C attests ONE career procedure count (10k/14k/17k/18k live simultaneously) + breast-aug count",
+      "spec": "D3",
+      "owner": "Dr. C",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-14",
+      "title": "Register bellaromamedspa.com + tsawellness.com (or preferred), flip registered:true in entity-web config",
+      "spec": "FW",
+      "owner": "Austin",
+      "due": "2026-08-12",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-15",
+      "title": "Export Magento catalog (~35 SKUs + packages + Bella Club) — storefront prerequisite either path",
+      "spec": "FW",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-16",
+      "title": "Paste Wikidata QuickStatements (person, then org), return QIDs to config",
+      "spec": "C9",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-17",
+      "title": "Fellowship inception year + cumulative fellows trained (unlocks the 1-of-16 story's numbers)",
+      "spec": "D3",
+      "owner": "Dr. C",
+      "due": "2026-08-29",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-18",
+      "title": "Click GSC Verify + add SA as user + enable Generative-AI report (NO BACKFILL). STATE CHANGE 08-07T22:38Z: required K_DY… TXT NOW OBSERVED IN DNS (DoH) — first half done; foreign BFXT… TXT still present (OPS-24)",
+      "spec": "MEASURE-06",
+      "owner": "Austin",
+      "due": "2026-08-10",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-19",
+      "title": "Claim Apple Business Connect place card (TSA + Bella Roma); decide Maps Ads posture after baseline (LOCAL-07)",
+      "spec": "LOCAL-07",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-20",
+      "title": "Claim + dedupe Yelp listings (3 exist per dossier) — Yelp is licensed AI supply; solicitation stays banned and stays OUT of ask-routing (AUTH-04)",
+      "spec": "AUTH-04",
+      "owner": "Austin",
+      "due": "2026-08-22",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-21",
+      "title": "GBP defense pack: enable edit-diff monitoring, create/claim practitioner listings for all surgeons, pre-build suspension recovery dossier + extortion response playbook (LOCAL-08)",
+      "spec": "LOCAL-08",
+      "owner": "Austin + next build session (gbp-guard)",
+      "due": "2026-08-29",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-22",
+      "title": "Semrush API entitlement: Subscription info → API units (classic key → SEMRUSH_API_KEY_CLASSIC) and/or API add-on so the v4 PAT activates; then rotate the PAT",
+      "spec": "COMPETITIVE",
+      "owner": "Austin",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P2"
+    },
+    {
+      "id": "OPS-23",
+      "title": "NAP number decision (LOCAL-02): GBP listing shows (918) 392-7900 but site NAP is 918-392-0880 — likely Yext tracked number. Pick ONE canonical number for GBP+site+citations; DNI pool excludes it; kill Yext UTM/tracking remnants deliberately",
+      "spec": "LOCAL-02",
+      "owner": "Austin + Dr. C",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P0"
+    },
+    {
+      "id": "OPS-24",
+      "title": "Audit the FOREIGN google-site-verification TXT (BFXT…) on tulsasurgicalarts.com after GSC verify — identifies who else holds Search Console domain claim (agency?); revoke or document",
+      "spec": "MEASURE-06",
+      "owner": "Austin",
+      "due": "2026-08-15",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-25",
+      "title": "Social live-mode onboarding: register Meta app (App Review: read_insights, instagram_manage_insights, threads_basic), TikTok Login Kit app, Reddit script app; set YOUTUBE_API_KEY + X bearer; run `social-tracker cli.py authorize` per provider, add provider_ids to the tenant credential registry; install weekly launchd sync (social-tracker/launchd/com.practicestack.social-sync.plist). LinkedIn/Snapchat/TruthSocial stay manual-cadence (`manual` verb)",
+      "spec": "SOCIAL-LIVE",
+      "owner": "Austin",
+      "due": "2026-08-29",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-26",
+      "title": "Claim Bing Places for Business — BOTH campuses (TSA + OSA). Bing feeds Copilot/ChatGPT local answers; runbook W2-5's Bing half. IndexNow key file is committed engine-side; live ping needs the key file at the live site root too.",
+      "spec": "W2-5",
+      "owner": "Austin",
+      "due": "2026-08-28",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-27",
+      "title": "Apple Business Connect: extend the OPS-19 claim to the OSA campus (OPS-19 names only TSA + Bella Roma; OPS_CONSOLIDATION_RUNBOOK W2-5 says both campuses).",
+      "spec": "W2-5",
+      "owner": "Austin",
+      "due": "2026-08-28",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-28",
+      "title": "Atlas Command live feed: add SEMRUSH_API_KEY + CRUX_PSI_API_KEY repository secrets to atlas-authority-site (Actions hourly cron is armed and degrades honestly without them); top up Semrush API units at semrush.com/mcp-access (OPS-22 twin) — also un-stales the 08-08 authority-score/backlink figures.",
+      "spec": "CMD-1",
+      "owner": "Austin",
+      "due": "2026-08-27",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-29",
+      "title": "Router: after the practice-stack PR merges, run publish_router.sh (both) for the merged family-router + additions; then the KVS cutover — compile with ops/aws/closure_compile.py (census + release tree), load with ops/aws/kvs_load.sh, and author the store-READING function against the merged architecture (the one open piece; see router-census 2026-08-23 §RECONCILIATION), gated through publish_router.sh vectors.",
+      "spec": "A8",
+      "owner": "Austin",
+      "due": "2026-08-30",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-30",
+      "title": "Port the Estate Concierge (tsa-estate-staging PR: assets/css/concierge.css + assets/js/concierge*.js + include lines + OSA JSON-LD medicalSpecialty fix) onto the live tree and ship via ops/aws/ship_estate.sh — replaces the unreadable generic chat helper on the live sites.",
+      "spec": "E9",
+      "owner": "Austin",
+      "due": "2026-08-30",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-31",
+      "title": "Deploy the concierge service with the roster wired: set ATLAS_CONCIERGE_JWT_SECRET (people.py new-secret, stored in SECRETS_LOCAL/), ATLAS_CONCIERGE_PEOPLE_FILE=tenants/people.json, ATLAS_CONCIERGE_JWT_AUDIENCE/_ISSUER, CORS_ALLOW_ORIGIN=https://www.atlas-authority.com; then set CONFIG.conciergeApi in atlas-authority-site/command/index.html. Until this lands, cards sign people in and the console says honestly that the backend is not deployed.",
+      "spec": "ADR-0021",
+      "owner": "Austin",
+      "due": "2026-08-31",
+      "status": "open",
+      "priority": "P1"
+    },
+    {
+      "id": "OPS-32",
+      "title": "Decide whether atlas-authority.com/command/ itself should require a card. Today the page is noindexed + robots-excluded but publicly readable; the per-person card gates Ask Atlas, not the figures. Options: leave public (operating read-out), CloudFront signed-cookie gate, or move the console behind the concierge origin.",
+      "spec": "E9",
+      "owner": "Austin",
+      "due": "2026-09-06",
+      "status": "open",
+      "priority": "P2"
+    },
+    {
+      "id": "OPS-33",
+      "title": "Complete the people roster before sending cards: full names + emails for Sam and Pava, and the real role for Paige Cuzalina and Pava (both seeded 'viewer' = read-only because this session was not told their jobs). One word per person in tenants/people.json, then people.py card <id>.",
+      "spec": "ADR-0021",
+      "owner": "Austin",
+      "due": "2026-08-26",
+      "status": "open",
+      "priority": "P1"
+    }
+  ]
 }
