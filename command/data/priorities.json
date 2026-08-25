@@ -1,77 +1,15 @@
 {
- "schema": "atlas-priorities-v1",
- "captured_at": "2026-08-24",
- "note": "Ranked by consequence per unit of effort. Owner items name the credential-gated click; engineering items are done or queued in-repo.",
+ "schema": "atlas-command-priorities-v1",
+ "captured_at": "2026-08-25",
+ "note": "Regenerated 2026-08-25 (connect-and-close sitting) from the live close-out ledger. Items closed that morning were removed: GSC verify (done 08-22), robots AI-block (dead since cutover), SNS confirm (confirmed 08-25 via the emailed token), engine-export staleness (per-tenant exports now daily). Every row cites who and why; effort is honest.",
  "items": [
-  {
-   "rank": 1,
-   "who": "owner",
-   "what": "Click Verify in Google Search Console (OPS-18) + add the service account",
-   "why": "Unlocks 11 gated engine variables and ~16 months of owned search truth. NO BACKFILL \u2014 every day unclicked is permanently lost history.",
-   "effort": "2 minutes"
-  },
-  {
-   "rank": 2,
-   "who": "owner",
-   "what": "Flip the Cloudflare managed robots.txt AI-crawler block OFF + add the Sitemap line (OPS-1)",
-   "why": "9 AI crawlers still disallowed; the AI Visibility pillar is gated on this exact toggle. Oldest overdue P0.",
-   "effort": "2 minutes"
-  },
-  {
-   "rank": 3,
-   "who": "owner",
-   "what": "Back up the causal ledger \u2014 replicate ATLAS_VALIDATION_ARCHIVE off the one Mac",
-   "why": "The append-only intervention ledger exists on one disk. Worst damage-to-effort ratio on the board. Box/Drive replica IDs already recorded in config.",
-   "effort": "~15 minutes"
-  },
-  {
-   "rank": 4,
-   "who": "owner",
-   "what": "Resolve the NAP phone decision (OPS-23): GBP (918) 392-7900 vs site 918-392-0880",
-   "why": "Inconsistent NAP has direct, well-documented local-ranking impact; blocks citation-auditor custody run and the DNI exclusion list.",
-   "effort": "1 decision"
-  },
-  {
-   "rank": 5,
-   "who": "clinician",
-   "what": "Clear the DRAFT_PENDING_CLINICAL_REVIEW corpus queue (TSA 10 + OSA records incl. this session\u2019s build-out) via ATTESTATION.md tick-and-commit",
-   "why": "The only gate between the measurement engine and the live site. Corpus build-out toward 72-page parity is underway; review is the human half.",
-   "effort": "review session"
-  },
-  {
-   "rank": 6,
-   "who": "owner",
-   "what": "Verify domain in Bing Webmaster Tools (OPS-3), claim Bing Places + Apple Business Connect (OPS-19) for both campuses",
-   "why": "Bing feeds ChatGPT/Copilot local answers; Apple feeds Siri/Spotlight/Maps. IndexNow ping path is coded and one env var away.",
-   "effort": "~30 minutes"
-  },
-  {
-   "rank": 7,
-   "who": "owner",
-   "what": "Fix the live wellness page GLP-1 trademark language by hand",
-   "why": "Live regulatory exposure; the new engine gate guards engine output only \u2014 the live page is hand-built.",
-   "effort": "~20 minutes"
-  },
-  {
-   "rank": 8,
-   "who": "owner",
-   "what": "Semrush API entitlement (OPS-22) + add SEMRUSH_API_KEY secret to atlas-authority-site",
-   "why": "Turns this console\u2019s hourly refresh from seed-replay into live pulls; also refreshes the stale authority-score/backlink figures.",
-   "effort": "~10 minutes"
-  },
-  {
-   "rank": 9,
-   "who": "owner",
-   "what": "Publish the estate router update (publish_router.sh) once this session\u2019s redirect work merges",
-   "why": "Closes the remaining legacy-URL families; the KeyValueStore migration removes the 10KB cap permanently.",
-   "effort": "~10 minutes"
-  },
-  {
-   "rank": 10,
-   "who": "owner",
-   "what": "Healthgrades wrong-name fix (OPS-8) + RealSelf claim (OPS-9) + NPPES refresh (OPS-2)",
-   "why": "170 orphaned reviews at 4.8\u2605; RealSelf 3.4\u2605 unclaimed is the weakest surface; NPPES stale since 2007 undermines registry corroboration.",
-   "effort": "~45 minutes"
-  }
+  {"rank": 1, "who": "owner", "what": "Renew okccosmeticsurgeon.com at eNom and set nameservers to dalary.ns.cloudflare.com + thaddeus.ns.cloudflare.com", "why": "Registry-verified deadline 2026-09-19 (RDAP; registrar eNom, IANA 48). Everything else is armed and waiting: Cloudflare zone 641dc6f3, ACM cert pre-validated, CloudFront E20XOIG7ENLISG live with all 12 redirect vectors green. 25 years of legacy links land nowhere until the NS flip.", "effort": "10 minutes at eNom"},
+  {"rank": 2, "who": "owner", "what": "Approve device binding on the two scheduled tasks (okc completion checker · 2026-09-08 verification)", "why": "Both run cloud-only until approved; their Mac-side steps (battery replays, local probes) stay skipped.", "effort": "1 minute in the Claude app"},
+  {"rank": 3, "who": "owner", "what": "Register the platform apps for social OAuth: Meta first (App Review is the long pole), then TikTok, LinkedIn, X; create the Google OAuth client (fast, no long review)", "why": "The estate's OAuth broker is live: each app's client_id/secret drops into ONE Secrets Manager record and its Connect button lights up by itself — no redeploy. The console's Connections strip shows each platform's honest state. Google Business Profile alternatively takes a manager invitation with no app at all.", "effort": "Meta ~1–2h + review wait; Google ~15 min; others ~30 min each"},
+  {"rank": 4, "who": "owner", "what": "Top up DataForSEO ($50 deposit; balance was $0.67)", "why": "Funds the weekly Monday geo-grid scan and daily SERP-rank pulls — the Local Grid map and SERP trend stay current.", "effort": "5 minutes"},
+  {"rank": 5, "who": "owner", "what": "Add Semrush API units (semrush.com/mcp-access)", "why": "Units exhausted since 08-22. Unlocks the hourly demand pull (OPS-28), AI-visibility checks, and the Content Studio's recent-demand deltas. Aug-22 baseline stands meanwhile: AS 28 · 3,479 keywords · 490 ref domains.", "effort": "5 minutes"},
+  {"rank": 6, "who": "clinician", "what": "Read through the 15 rewritten plain-language guides (911/ED-first restructure)", "why": "Signed 08-23, then the emergency routing was corrected 08-24 — the registry holds amendment_status PENDING_CLINICAL_RE_REVIEW until an owner-authored read-through clears it.", "effort": "30–45 minutes"},
+  {"rank": 7, "who": "owner", "what": "One sentence on NexTech: proceed with the filed questionnaire, or exclude it", "why": "The record contradicts itself: one session recorded 'excluded by order' while the filesystem holds a built client (17/17) and a questionnaire filed at max capability with a CSM thread in flight. Nobody acts either way without your sentence.", "effort": "1 sentence"},
+  {"rank": 8, "who": "owner", "what": "Name the supervising physician on the med-spa and wellness pages (MED-1) and decide the OSBMLS equivalence path for ABCS/ABFCS advertising (BRD-1, $120 application)", "why": "MED-1: six pages assert physician-guided care without naming one. BRD-1: OAC 435:10-7-2 requires an equivalence finding before non-ABMS certifications are advertised for the MDs; OAC 510:5-13 governs the DOs separately.", "effort": "two sentences + one decision"}
  ]
 }

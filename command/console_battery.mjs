@@ -53,7 +53,10 @@ ok('the chat is closed when signed out', await page.locator('#chat-q').isDisable
 // 2 — the magic link signs you in and disappears from the address bar
 requests.length = 0;
 await page.goto(LINK, { waitUntil:'networkidle' });
-ok('link signs the person in', (await page.locator('#who-current').textContent()) === 'SAM');
+ok('link signs the person in',
+   /SAM/i.test(await page.locator('#who-current').textContent() || ''));
+   // roster truth moved under OPS-33 (2026-08-25): sam is Samantha Price —
+   // the badge may carry the fuller name; it must still name HER.
 ok('keyring stripped from the address bar', !page.url().includes('atlas='), page.url());
 ok('no request carried the token', requests.every(u => !u.includes('atlas=')));
 const stored = await page.evaluate(() => localStorage.getItem('atlas.keyring'));
@@ -80,10 +83,10 @@ for (const slug of ['estate','tsa-cuzalina','osa','bella-roma','tsa-wellness']) 
 }
 await page.evaluate(() => selectTenant('tsa-cuzalina'));
 const askTxt = await page.locator('#ask-panel').innerText();
-ok('backend absence stated, no fake chat',
-   /activation pending/i.test(askTxt) && /deploys with your credentials/i.test(askTxt),
-   askTxt.slice(0,100));
-ok('the chat stays closed without a backend', await page.locator('#chat-q').isDisabled());
+ok('the ask panel no longer claims activation pending (backend armed 2026-08-24)',
+   !/activation pending/i.test(askTxt), askTxt.slice(0,100));
+ok('the chat is open once a backend is configured (door era, 43d1872)',
+   !(await page.locator('#chat-q').isDisabled()));
 
 // 5 — selector badges the person's own practices
 await page.click('#tsel-btn');
