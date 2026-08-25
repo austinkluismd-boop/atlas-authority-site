@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Local Visibility Map — Atlas Command</title>
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<style>
+  :root { --ink:#0B0B0C; --gold:#C8A45C; --ivory:#f5f1e8; --muted:#9a968c; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--ink); color:var(--ivory); font:14px/1.45 Inter, -apple-system, sans-serif; height:100vh; display:flex; flex-direction:column; }
+  header { padding:14px 20px 10px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; border-bottom:1px solid #1d1d20; }
+  header h1 { font:600 20px/1 "Cormorant Garamond", Georgia, serif; letter-spacing:.04em; color:var(--gold); }
+  header .sub { color:var(--muted); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  header a.back { margin-left:auto; color:var(--muted); text-decoration:none; font-size:12px; }
+  header a.back:hover { color:var(--gold); }
+  #controls { padding:10px 20px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; border-bottom:1px solid #1d1d20; }
+  .pill { border:1px solid #33342f; background:transparent; color:var(--ivory); border-radius:999px; padding:6px 14px; font-size:12.5px; cursor:pointer; letter-spacing:.02em; }
+  .pill.on { border-color:var(--gold); color:var(--gold); background:rgba(200,164,92,.08); }
+  .toggle { margin-left:auto; display:flex; gap:8px; align-items:center; color:var(--muted); font-size:12px; }
+  #map { flex:1; min-height:0; }
+  #legend { position:absolute; bottom:26px; left:16px; z-index:5; background:rgba(11,11,12,.92); border:1px solid #26261f; border-radius:10px; padding:12px 14px; max-width:290px; }
+  #legend .ramp { height:10px; border-radius:5px; margin:8px 0 4px;
+    background:linear-gradient(90deg,#0a7f45,#7fb069,#f2c94c,#f2994a,#eb5757); }
+  #legend .ends { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
+  #legend .keys { margin-top:9px; display:grid; gap:5px; font-size:11.5px; color:var(--ivory); }
+  #legend .keys span.dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:7px; vertical-align:-1px; }
+  #honesty { position:absolute; top:12px; right:12px; z-index:5; background:rgba(11,11,12,.92); border:1px solid #26261f; border-radius:10px; padding:10px 13px; max-width:300px; font-size:11.5px; color:var(--muted); }
+  #honesty b { color:var(--ivory); font-weight:600; }
+  .maplibregl-popup-content { background:var(--ink); color:var(--ivory); border:1px solid var(--gold); border-radius:10px; font:12.5px Inter, sans-serif; padding:12px 14px; }
+  .maplibregl-popup-tip { border-top-color:var(--gold) !important; }
+  .pop h3 { font:600 14px "Cormorant Garamond", serif; color:var(--gold); margin-bottom:6px; }
+  .pop table { border-collapse:collapse; }
+  .pop td { padding:2px 8px 2px 0; }
+  .pop .r { font-weight:600; }
+  .pop .comp { color:var(--muted); font-size:11px; margin-top:6px; }
+  footer { padding:7px 20px; color:var(--muted); font-size:11px; border-top:1px solid #1d1d20; display:flex; gap:16px; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Local Visibility Map</h1>
+  <span class="sub">Tulsa Surgical Arts · measured rank geography</span>
+  <a class="back" href="../">← Command</a>
+</header>
+<div id="controls"></div>
+<div style="position:relative; flex:1; display:flex; min-height:0;">
+  <div id="map"></div>
+  <div id="honesty"></div>
+  <div id="legend">
+    <b style="font-size:12px">Map rank (lower is better)</b>
+    <div class="ramp"></div>
+    <div class="ends"><span>#1</span><span>#10</span><span>#21 = outside top-20</span></div>
+    <div class="keys">
+      <div><span class="dot" style="background:#C8A45C"></span>Measured point — ranked (number shown)</div>
+      <div><span class="dot" style="background:transparent;border:2px solid #444"></span>Measured — not in top-20 (&gt;20)</div>
+      <div><span class="dot" style="background:transparent;border:2px dashed #999"></span>No SERP data returned at this point</div>
+    </div>
+  </div>
+</div>
+<footer id="meta"></footer>
+<script src="vendor/maplibre-gl.js"></script>
+<script src="vendor/pmtiles.js"></script>
+<script>
+(async function(){
+  const protocol = new pmtiles.Protocol();
+  maplibregl.addProtocol('pmtiles', protocol.tile);
+  const [style, rasters, grid] = await Promise.all([
+    fetch('style.json').then(r=>r.json()),
+    fetch('data/rasters.json').then(r=>r.json()),
+    fetch('data/geogrid.geojson').then(r=>r.json())
+  ]);
+  const KWS = ['overall', ...grid.metadata.keywords];
+  let current = 'overall', surfaceOn = true;
+
+  // ---- rank → color ramp (1 best … 21 = measured, outside top-20)
+  const stops = [[1,[10,127,69]],[5,[127,176,105]],[10,[242,201,76]],[15,[242,153,74]],[21,[235,87,87]]];
+  function rampColor(v){
+    v = Math.max(1, Math.min(21, v));
+    for (let i=0;i<stops.length-1;i++){
+      const [a,ca]=stops[i], [b,cb]=stops[i+1];
+      if (v<=b){ const t=(v-a)/(b-a); return ca.map((c,k)=>Math.round(c+(cb[k]-c)*t)); }
+    }
+    return stops[stops.length-1][1];
+  }
+  // ---- surface raster → canvas data URL
+  function surfaceImage(key){
+    const n = rasters.n, vals = rasters.surfaces[key];
+    const cv = document.createElement('canvas'); cv.width=n; cv.height=n;
+    const ctx = cv.getContext('2d'); const img = ctx.createImageData(n,n);
+    for (let i=0;i<n*n;i++){
+      const [r,g,b] = rampColor(vals[i]);
+      img.data[i*4]=r; img.data[i*4+1]=g; img.data[i*4+2]=b; img.data[i*4+3]=150;
+    }
+    ctx.putImageData(img,0,0);
+    const big = document.createElement('canvas'); big.width=n*4; big.height=n*4;
+    const bctx = big.getContext('2d'); bctx.imageSmoothingEnabled=true; bctx.imageSmoothingQuality='high';
+    bctx.drawImage(cv,0,0,big.width,big.height);
+    return big.toDataURL('image/png');
+  }
+  const [x0,y0,x1,y1] = rasters.bbox;
+  const imgCoords = [[x0,y1],[x1,y1],[x1,y0],[x0,y0]];
+
+  const map = new maplibregl.Map({ container:'map', style, center:[-95.8838,36.0289], zoom:11.2, maxZoom:15.9, attributionControl:{compact:true} });
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}), 'top-left');
+  map.addControl(new maplibregl.ScaleControl({unit:'imperial'}), 'bottom-right');
+
+  function pointsFC(kw){
+    return { type:'FeatureCollection', features: grid.features.map(f=>{
+      const P=f.properties; let state, val=null, label='';
+      if (kw==='overall'){
+        if (P.measured>0){ state='ranked'; val=P.avg; label=String(P.avg); }
+        else if (Object.values(P.ranks).some(r=>(r.listings||0)>0)){ state='absent'; label='>20'; }
+        else { state='nodata'; }
+      } else {
+        const r=P.ranks[kw];
+        if (!r || (r.listings||0)===0){ state='nodata'; }
+        else if (r.rank!==null){ state='ranked'; val=r.rank; label='#'+r.rank; }
+        else { state='absent'; label='>20'; }
+      }
+      return { type:'Feature', geometry:f.geometry, properties:{...P, state, val, label} };
+    })};
+  }
+
+  map.on('load', ()=>{
+    map.addSource('surface', { type:'image', url:surfaceImage(current), coordinates:imgCoords });
+    map.addLayer({ id:'surface', type:'raster', source:'surface', paint:{ 'raster-opacity':0.55, 'raster-resampling':'linear' } }, 'places_locality');
+    map.addSource('gridpts', { type:'geojson', data:pointsFC(current) });
+    map.addLayer({ id:'pts-ranked', type:'circle', source:'gridpts', filter:['==',['get','state'],'ranked'],
+      paint:{ 'circle-radius':11, 'circle-color':'#0B0B0C', 'circle-stroke-color':'#C8A45C', 'circle-stroke-width':2 }});
+    map.addLayer({ id:'pts-ranked-label', type:'symbol', source:'gridpts', filter:['==',['get','state'],'ranked'],
+      layout:{ 'text-field':['get','label'], 'text-size':10, 'text-font':['Noto Sans Medium'] }, paint:{ 'text-color':'#C8A45C' }});
+    map.addLayer({ id:'pts-absent', type:'circle', source:'gridpts', filter:['==',['get','state'],'absent'],
+      paint:{ 'circle-radius':7, 'circle-color':'rgba(0,0,0,0)', 'circle-stroke-color':'#55534d', 'circle-stroke-width':2 }});
+    map.addLayer({ id:'pts-nodata', type:'circle', source:'gridpts', filter:['==',['get','state'],'nodata'],
+      paint:{ 'circle-radius':5, 'circle-color':'rgba(0,0,0,0)', 'circle-stroke-color':'#8a8a8a', 'circle-stroke-width':1.5, 'circle-stroke-opacity':0.8 }});
+    map.addSource('hq', { type:'geojson', data:{type:'Feature',geometry:{type:'Point',coordinates:[-95.8838,36.0289]},properties:{}} });
+    map.addLayer({ id:'hq', type:'circle', source:'hq', paint:{ 'circle-radius':8, 'circle-color':'#C8A45C', 'circle-stroke-color':'#0B0B0C', 'circle-stroke-width':3 }});
+    map.addLayer({ id:'hq-label', type:'symbol', source:'hq', layout:{ 'text-field':'TSA', 'text-offset':[0,1.4], 'text-size':11, 'text-font':['Noto Sans Medium'] }, paint:{ 'text-color':'#C8A45C', 'text-halo-color':'#ffffff', 'text-halo-width':1.2 }});
+
+    map.on('click', ['pts-ranked','pts-absent','pts-nodata'], e=>{
+      const P = e.features[0].properties;
+      const ranks = typeof P.ranks==='string' ? JSON.parse(P.ranks) : P.ranks;
+      let rows='';
+      for (const [kw,r] of Object.entries(ranks)){
+        const shown = (r.listings||0)===0 ? '<i>no SERP data</i>' : (r.rank!==null ? '#'+r.rank : '&gt;20');
+        rows += `<tr><td>${kw}</td><td class="r">${shown}</td></tr>`;
+      }
+      const comp = Object.values(ranks).map(r=>r.competitor).filter(Boolean)[0];
+      new maplibregl.Popup({closeButton:true, maxWidth:'300px'})
+        .setLngLat(e.lngLat)
+        .setHTML(`<div class="pop"><h3>Grid point r${P.row}·c${P.col}</h3><table>${rows}</table>${comp?`<div class="comp">local #1 here: ${comp}</div>`:''}</div>`)
+        .addTo(map);
+    });
+    ['pts-ranked','pts-absent','pts-nodata'].forEach(l=>{
+      map.on('mouseenter', l, ()=>map.getCanvas().style.cursor='pointer');
+      map.on('mouseleave', l, ()=>map.getCanvas().style.cursor='');
+    });
+  });
+
+  // controls
+  const ctr = document.getElementById('controls');
+  KWS.forEach(kw=>{
+    const b=document.createElement('button'); b.className='pill'+(kw===current?' on':''); b.textContent=kw;
+    b.onclick=()=>{ current=kw;
+      [...ctr.querySelectorAll('.pill')].forEach(x=>x.classList.toggle('on', x===b));
+      map.getSource('surface').updateImage({url:surfaceImage(kw), coordinates:imgCoords});
+      map.getSource('gridpts').setData(pointsFC(kw));
+    };
+    ctr.appendChild(b);
+  });
+  const tg=document.createElement('label'); tg.className='toggle';
+  tg.innerHTML='<input type="checkbox" checked> interpolated surface';
+  tg.querySelector('input').onchange=e=>{ surfaceOn=e.target.checked; map.setLayoutProperty('surface','visibility',surfaceOn?'visible':'none'); };
+  ctr.appendChild(tg);
+
+  const noData = grid.features.filter(f=>Object.values(f.properties.ranks).every(r=>(r.listings||0)===0)).length;
+  document.getElementById('honesty').innerHTML =
+    `<b>Read this map honestly.</b> Ranks were <b>measured at ${grid.features.length} grid points</b> (${rasters.grid}, scanned ${rasters.scanned_at.slice(0,10)}). `+
+    `The colored surface is <b>interpolation between those points</b> for legibility — not block-by-block measurement. `+
+    (noData?`<b>${noData} points returned no SERP data</b> (excluded from the surface; shown dashed).`:'');
+  document.getElementById('meta').innerHTML =
+    `<span>Scan ${rasters.scanned_at.slice(0,16).replace('T',' ')} UTC</span><span>${rasters.grid} grid</span>`+
+    `<span>${rasters.method}</span><span>Basemap © OpenStreetMap — served from this estate's own bucket; no third-party map service receives these views.</span>`;
+})();
+</script>
+</body>
+</html>

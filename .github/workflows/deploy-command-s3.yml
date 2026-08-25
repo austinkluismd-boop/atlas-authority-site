@@ -44,7 +44,8 @@ jobs:
           aws s3 sync . "s3://${{ vars.AWS_SITE_BUCKET }}" \
             --delete \
             --exclude ".git/*" --exclude ".github/*" \
-            --exclude "CLAUDE.md" --exclude "*.mjs"
+            --exclude "CLAUDE.md" --exclude "*.mjs" \
+            --exclude "command/map/tiles/*" --exclude "command/map/assets/fonts/*"
       - name: invalidate the door + console shell
         if: steps.armed.outputs.armed == 'true'
         run: |
