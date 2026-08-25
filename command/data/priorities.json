@@ -1,15 +1,56 @@
 {
  "schema": "atlas-command-priorities-v1",
  "captured_at": "2026-08-25",
- "note": "Regenerated 2026-08-25 (connect-and-close sitting) from the live close-out ledger. Items closed that morning were removed: GSC verify (done 08-22), robots AI-block (dead since cutover), SNS confirm (confirmed 08-25 via the emailed token), engine-export staleness (per-tenant exports now daily). Every row cites who and why; effort is honest.",
+ "note": "Re-verified 2026-08-25 evening (hands-on leg): MED-1 CLOSED \u2014 rc13 live, all six med-spa/wellness pages name Angelo Cuzalina, MD, DDS (owner ruling). BRD-1 resolved as owner-attested (OSBMLS equivalence filed and approved years ago). NexTech: owner ruled PROCEED \u2014 reply + filled questionnaire were already with Nextech's API team since 08-24; an automatic follow-up drafts a nudge Monday if they're silent. Healthgrades claim in progress.",
  "items": [
-  {"rank": 1, "who": "owner", "what": "Renew okccosmeticsurgeon.com at eNom and set nameservers to dalary.ns.cloudflare.com + thaddeus.ns.cloudflare.com", "why": "Registry-verified deadline 2026-09-19 (RDAP; registrar eNom, IANA 48). Everything else is armed and waiting: Cloudflare zone 641dc6f3, ACM cert pre-validated, CloudFront E20XOIG7ENLISG live with all 12 redirect vectors green. 25 years of legacy links land nowhere until the NS flip.", "effort": "10 minutes at eNom"},
-  {"rank": 2, "who": "owner", "what": "Approve device binding on the two scheduled tasks (okc completion checker · 2026-09-08 verification)", "why": "Both run cloud-only until approved; their Mac-side steps (battery replays, local probes) stay skipped.", "effort": "1 minute in the Claude app"},
-  {"rank": 3, "who": "owner", "what": "Register the platform apps for social OAuth: Meta first (App Review is the long pole), then TikTok, LinkedIn, X; create the Google OAuth client (fast, no long review)", "why": "The estate's OAuth broker is live: each app's client_id/secret drops into ONE Secrets Manager record and its Connect button lights up by itself — no redeploy. The console's Connections strip shows each platform's honest state. Google Business Profile alternatively takes a manager invitation with no app at all.", "effort": "Meta ~1–2h + review wait; Google ~15 min; others ~30 min each"},
-  {"rank": 4, "who": "owner", "what": "Top up DataForSEO ($50 deposit; balance was $0.67)", "why": "Funds the weekly Monday geo-grid scan and daily SERP-rank pulls — the Local Grid map and SERP trend stay current.", "effort": "5 minutes"},
-  {"rank": 5, "who": "owner", "what": "Add Semrush API units (semrush.com/mcp-access)", "why": "Units exhausted since 08-22. Unlocks the hourly demand pull (OPS-28), AI-visibility checks, and the Content Studio's recent-demand deltas. Aug-22 baseline stands meanwhile: AS 28 · 3,479 keywords · 490 ref domains.", "effort": "5 minutes"},
-  {"rank": 6, "who": "clinician", "what": "Read through the 15 rewritten plain-language guides (911/ED-first restructure)", "why": "Signed 08-23, then the emergency routing was corrected 08-24 — the registry holds amendment_status PENDING_CLINICAL_RE_REVIEW until an owner-authored read-through clears it.", "effort": "30–45 minutes"},
-  {"rank": 7, "who": "owner", "what": "One sentence on NexTech: proceed with the filed questionnaire, or exclude it", "why": "The record contradicts itself: one session recorded 'excluded by order' while the filesystem holds a built client (17/17) and a questionnaire filed at max capability with a CSM thread in flight. Nobody acts either way without your sentence.", "effort": "1 sentence"},
-  {"rank": 8, "who": "owner", "what": "Name the supervising physician on the med-spa and wellness pages (MED-1) and decide the OSBMLS equivalence path for ABCS/ABFCS advertising (BRD-1, $120 application)", "why": "MED-1: six pages assert physician-guided care without naming one. BRD-1: OAC 435:10-7-2 requires an equivalence finding before non-ABMS certifications are advertised for the MDs; OAC 510:5-13 governs the DOs separately.", "effort": "two sentences + one decision"}
+  {
+   "rank": 1,
+   "who": "owner",
+   "what": "Renew okccosmeticsurgeon.com at eNom and set nameservers to dalary.ns.cloudflare.com + thaddeus.ns.cloudflare.com",
+   "why": "Registry-verified deadline 2026-09-19 (RDAP; registrar eNom, IANA 48). Everything else is armed and waiting: Cloudflare zone 641dc6f3, ACM cert pre-validated, CloudFront E20XOIG7ENLISG live with all 12 redirect vectors green. 25 years of legacy links land nowhere until the NS flip.",
+   "effort": "10 minutes at eNom"
+  },
+  {
+   "rank": 2,
+   "who": "owner",
+   "what": "Approve device binding on the two scheduled tasks (okc completion checker \u00b7 2026-09-08 verification)",
+   "why": "Both run cloud-only until approved; their Mac-side steps (battery replays, local probes) stay skipped.",
+   "effort": "1 minute in the Claude app"
+  },
+  {
+   "rank": 3,
+   "who": "owner",
+   "what": "Register the platform apps for social OAuth: Meta first (App Review is the long pole), then TikTok, LinkedIn, X; create the Google OAuth client (fast, no long review)",
+   "why": "The estate's OAuth broker is live: each app's client_id/secret drops into ONE Secrets Manager record and its Connect button lights up by itself \u2014 no redeploy. The console's Connections strip shows each platform's honest state. Google Business Profile alternatively takes a manager invitation with no app at all.",
+   "effort": "Meta ~1\u20132h + review wait; Google ~15 min; others ~30 min each"
+  },
+  {
+   "rank": 4,
+   "who": "owner",
+   "what": "Top up DataForSEO ($50 deposit; balance was $0.67)",
+   "why": "Funds the weekly Monday geo-grid scan and daily SERP-rank pulls \u2014 the Local Grid map and SERP trend stay current.",
+   "effort": "5 minutes"
+  },
+  {
+   "rank": 5,
+   "who": "owner",
+   "what": "Add Semrush API units (semrush.com/mcp-access)",
+   "why": "Units exhausted since 08-22. Unlocks the hourly demand pull (OPS-28), AI-visibility checks, and the Content Studio's recent-demand deltas. Aug-22 baseline stands meanwhile: AS 28 \u00b7 3,479 keywords \u00b7 490 ref domains.",
+   "effort": "5 minutes"
+  },
+  {
+   "rank": 5,
+   "who": "clinician",
+   "what": "Read through the 15 rewritten plain-language guides (911/ED-first restructure)",
+   "why": "Signed 08-23, then the emergency routing was corrected 08-24 \u2014 the registry holds amendment_status PENDING_CLINICAL_RE_REVIEW until an owner-authored read-through clears it.",
+   "effort": "30\u201345 minutes"
+  },
+  {
+   "rank": 7,
+   "who": "owner",
+   "what": "Finish the Healthgrades claim (in progress) \u2014 fix name to Angelo Cuzalina, MD, DDS; credentials; phone 918-392-7900",
+   "why": "4.8-star, 170-review profile currently unclaimed with a wrong name, N/A credentials, and a (405) number.",
+   "effort": "5-10 minutes"
+  }
  ]
 }
