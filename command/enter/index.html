@@ -67,11 +67,14 @@ button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
    tokens ride in the fragment (never sent to a server), are stored in this
    browser only, and are stripped from the address bar on arrival. */
 const KEYRING_KEY = "atlas.keyring";
-/* The concierge origin. Mirrors CONFIG.conciergeApi in command/index.html —
-   null while the backend is undeployed, and this page says so honestly.
-   `let`, not `const`: the deploy edits this line, and the door's end-to-end
-   battery points it at a real service. */
-let CONCIERGE_API = null;
+/* The concierge origin. Mirrors CONFIG.conciergeApi in command/index.html.
+   Wired 2026-08-25: OPS-31 is live behind api.atlas-authority.com and the
+   gate mints cookies, so the door now speaks to it. The null state (and its
+   honest "not deployed" message below) remains the behavior of any
+   deployment that blanks this line. `let`, not `const`: the door's
+   end-to-end battery rewires it to a local concierge and proves the whole
+   card -> cookies -> console walk in a real browser. */
+let CONCIERGE_API = "https://api.atlas-authority.com";
 
 const $state = document.getElementById("state");
 function say(cls, html){ $state.className = "state " + cls; $state.innerHTML = html; }
