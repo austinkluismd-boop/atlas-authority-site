@@ -409,9 +409,32 @@ tr:last-child td{border-bottom:0}
 .tip{position:fixed;pointer-events:none;background:var(--panel2);border:1px solid var(--gold-dim);
   color:var(--ink);font-family:var(--mono);font-size:11px;padding:5px 9px;border-radius:3px;
   z-index:50;display:none;white-space:nowrap;box-shadow:var(--shadow)}
+
+/* ---------- standing (simple view) — 2026-08-25 ---------- */
+.stand-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:14px;margin-top:14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;min-height:170px}
+.tile h3{margin:0;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.tile .big{font-size:33px;line-height:1.05;font-family:var(--mono);color:var(--ink)}
+.tile .big small{font-size:13px;color:var(--muted)}
+.tile .second{font-size:12.5px;color:var(--ink2)}
+.tile .delta{font-size:12.5px;font-family:var(--mono)}
+.delta.up{color:#2FA84F}.delta.down{color:#D9484A}.delta.flat{color:var(--muted)}
+.spark{width:100%;height:46px;display:block}
+.tile .foot{font-size:11.5px;color:var(--muted);margin-top:auto}
+.tile .rows{display:flex;flex-direction:column;gap:7px;font-size:13px}
+.tile .rows .what{color:var(--ink2)}
+.tile a{color:var(--gold)}
+.conn{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.conn .cchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px;background:var(--panel);color:var(--ink2)}
+.conn .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.ok{background:#2FA84F}.dot.wait{background:#C8A45C}.dot.off{background:#8E8B81}
+.conn button.connect{border:1px solid var(--gold-dim);background:none;color:var(--gold);border-radius:14px;padding:2px 10px;font-size:11px;cursor:pointer}
+#view-toggle{cursor:pointer}
+body.simple section:not(#s-standing):not(#s-ask){display:none!important}
+body.simple .method{display:none}
 </style>
 </head>
-<body>
+<body class="simple">
 <div class="wrap">
 
 <header class="mast">
@@ -439,6 +462,7 @@ tr:last-child td{border-bottom:0}
     </button>
     <div class="tsel-menu who-menu" id="who-menu" role="dialog" aria-label="Console access"></div>
   </div>
+  <button class="tsel-btn" id="view-toggle" title="Switch between the simple standing view and the full-detail console">FULL DETAIL</button>
   <div class="tsel" id="tsel">
     <button class="tsel-btn" id="tsel-btn" aria-haspopup="listbox" aria-expanded="false">
       <span class="car">VIEWING</span> <b id="tsel-current">ESTATE</b> <span class="car">▾</span>
@@ -448,6 +472,12 @@ tr:last-child td{border-bottom:0}
 </div>
 
 <div id="err"></div>
+
+<section id="s-standing">
+  <div class="sec-h"><h2>Standing</h2><span class="sub" id="stand-sub">today, against baseline — live measurements only</span></div>
+  <div class="stand-grid" id="stand-grid"></div>
+  <div id="stand-conn"></div>
+</section>
 
 <section id="s-estate" hidden>
   <div class="sec-h">
@@ -605,6 +635,7 @@ const esc = s => String(s ?? "").replace(/[&<>"']/g,
 
 let FEED = null;
 let ENGINE = null;      /* data/engine-export.json — the engine's own output */
+let VISITORS = null;   /* data/visitors.json — edge-measured visitors, Mac-built daily */
 let TENANT = "estate";   /* estate | tsa-cuzalina | osa | bella-roma | tsa-wellness */
 
 /* The concierge backend (Ask Atlas). null = staged: the panel explains what
@@ -644,6 +675,10 @@ async function load(){
       const e = await fetch("data/engine-export.json", {cache:"no-store"});
       ENGINE = e.ok ? await e.json() : null;
     }catch(_){ ENGINE = null; }
+    try{
+      const v = await fetch("data/visitors.json", {cache:"no-store"});
+      VISITORS = v.ok ? await v.json() : null;
+    }catch(_){ VISITORS = null; }
     $("#err").style.display = "none";
     render();
   }catch(e){
@@ -924,6 +959,7 @@ function render(){
   $("#ledger").style.display = (isCampus || isEstate) ? "" : "none";
   $("#s-baseline").hidden = !(isCampus || isEstate);
   $("#s-geo").hidden = isPre;
+  $("#s-standing").hidden = isPre;
   const hasEngine = !!engineOf(TENANT) || isEstate;
   $("#s-todo").hidden = isPre;
   $("#s-trend").hidden = !(isCampus || isEstate);
@@ -937,6 +973,7 @@ function render(){
   renderFreshness();
   if(!isPre) renderTodo();
   if(isCampus || isEstate) renderWork();
+  renderStanding(); renderConnections();
   renderEngine(); renderStudio(); renderAsk(); renderPriorities(); renderOps(); renderGeo();
 }
 
@@ -2252,6 +2289,296 @@ function demoGrid(){
   return `<div class="heat" style="grid-template-columns:repeat(7,34px);opacity:.55" aria-hidden="true">${cells}</div>
     <p style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:6px">7×7 lattice · renders when the first real scan lands</p>`;
 }
+
+
+/* ---------- standing (simple view) — 2026-08-25 ----------
+   Six live graphics for a non-technical read: search, visitors, patient
+   interest (conversion signals), priorities, local grid, content engine.
+   Every figure is a measurement with its capture date; a gap stays a gap. */
+
+const CAMPUSES = ["tsa-cuzalina", "osa"];
+const VIS_KEY = {"tsa-cuzalina": "tsa", "osa": "osa"};
+
+function panelSeries(slug, col){
+  return engTable(slug, "panel_daily")
+    .filter(r => r.date != null)
+    .map(r => ({d: r.date, v: (r[col] === undefined ? null : r[col])}));
+}
+function sumByDate(seriesList){
+  const m = new Map();
+  for(const series of seriesList) for(const pt of series){
+    if(pt.v == null) continue;
+    m.set(pt.d, (m.get(pt.d) || 0) + pt.v);
+  }
+  return [...m.entries()].sort((a,b)=>a[0]<b[0]?-1:1).map(([d,v])=>({d,v}));
+}
+function standSeries(col){
+  if(TENANT === "estate") return sumByDate(CAMPUSES.map(c => panelSeries(c, col)));
+  return panelSeries(TENANT, col).filter(pt => pt.v != null);
+}
+function visDays(slug){
+  const t = VISITORS && VISITORS.tenants && VISITORS.tenants[VIS_KEY[slug]];
+  return (t && t.days) || [];
+}
+function standVisDays(){
+  if(TENANT !== "estate"){
+    return visDays(TENANT).map(x => ({...x}));
+  }
+  const m = new Map();
+  for(const c of CAMPUSES) for(const x of visDays(c)){
+    const cur = m.get(x.date) || {date:x.date, page_views:0, unique_ips:0,
+                                  assist_posts:0, booking_intent_views:0,
+                                  partial:false};
+    cur.page_views += x.page_views; cur.unique_ips += x.unique_ips;
+    cur.assist_posts += x.assist_posts;
+    cur.booking_intent_views += x.booking_intent_views;
+    cur.partial = cur.partial || !!x.partial;
+    m.set(x.date, cur);
+  }
+  return [...m.values()].sort((a,b)=>a.date<b.date?-1:1);
+}
+function sparkSVG(pts, opts){
+  const o = opts || {};
+  const vals = pts.map(pt => pt.v).filter(v => v != null);
+  if(vals.length < 2) return "";
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const W = 220, H = 46, pad = 4;
+  const x = i => pad + i * (W - 2*pad) / Math.max(1, pts.length - 1);
+  const y = v => hi === lo ? H/2 : H - pad - (v - lo) * (H - 2*pad) / (hi - lo);
+  let segs = [], cur = [];
+  pts.forEach((pt, i) => {
+    if(pt.v == null){ if(cur.length > 1) segs.push(cur); cur = []; return; }
+    cur.push(x(i).toFixed(1) + "," + y(pt.v).toFixed(1));
+  });
+  if(cur.length > 1) segs.push(cur);
+  const lastIdx = (() => { for(let i = pts.length-1; i >= 0; i--) if(pts[i].v != null) return i; return -1; })();
+  const dot = lastIdx < 0 ? "" :
+    `<circle cx="${x(lastIdx).toFixed(1)}" cy="${y(pts[lastIdx].v).toFixed(1)}" r="3" fill="${o.color||"#C8A45C"}"/>`;
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="trend">
+    ${segs.map(sg => `<polyline points="${sg.join(" ")}" fill="none" stroke="${o.color||"#C8A45C"}" stroke-width="1.6"/>`).join("")}${dot}</svg>`;
+}
+function deltaHTML(nowSum, prevSum, label){
+  if(prevSum == null || nowSum == null) return `<span class="delta flat">${esc(label)}: not yet comparable</span>`;
+  if(prevSum === 0 && nowSum === 0) return `<span class="delta flat">flat · ${esc(label)}</span>`;
+  const diff = nowSum - prevSum;
+  const pct = prevSum ? Math.round(100 * diff / prevSum) : null;
+  const cls = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+  const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "＝";
+  return `<span class="delta ${cls}">${arrow} ${diff > 0 ? "+" : ""}${FMT(diff)}${pct == null ? "" : " (" + (pct > 0 ? "+" : "") + pct + "%)"} ${esc(label)}</span>`;
+}
+function sumWindow(pts, n, endOffset){
+  const usable = pts.filter(pt => pt.v != null && !pt.partial);
+  const end = usable.length - (endOffset || 0);
+  const start = end - n;
+  if(start < 0) return null;
+  return usable.slice(start, end).reduce((a, pt) => a + pt.v, 0);
+}
+function baselineOf(slug, metricId){
+  const rows = engTable(slug === "estate" ? "tsa-cuzalina" : slug, "baselines");
+  const r = rows.find(x => x.id === metricId);
+  return r ? r.baseline_frozen : null;
+}
+function tile(title, bodyHTML, footHTML){
+  return `<div class="tile"><h3>${esc(title)}</h3>${bodyHTML}<div class="foot">${footHTML || ""}</div></div>`;
+}
+
+function renderStanding(){
+  const host = $("#stand-grid"); if(!host) return;
+  const tiles = [];
+  const scopeName = TENANT === "estate" ? "TSA + OSA (summed, one provenance class)" :
+    (compOf(TENANT) || {}).name || TENANT;
+  $("#stand-sub").textContent = scopeName + " · every figure carries its capture date · a gap is not a zero";
+
+  /* 1 — search */
+  {
+    const clicks = standSeries("gsc_clicks");
+    const imps = standSeries("gsc_impressions");
+    const last = clicks.length ? clicks[clicks.length-1] : null;
+    const now7 = sumWindow(clicks, 7, 0), prev7 = sumWindow(clicks, 7, 7);
+    const impLast = imps.length ? imps[imps.length-1] : null;
+    const body = last ? `
+      <div class="big">${FMT(last.v)} <small>clicks from Google · ${esc(last.d)}</small></div>
+      <div class="second">${impLast ? FMT(impLast.v) + " times shown in results that day" : ""}</div>
+      ${sparkSVG(clicks.slice(-60))}
+      ${deltaHTML(now7, prev7, "last 7 days vs the 7 before")}` :
+      `<div class="second">No site-level Search Console days yet for this view — the engine records the absence, never a zero.</div>`;
+    tiles.push(tile("Search — Google", body,
+      `<span class="chip measured">measured</span> Google Search Console via the engine · updates daily 6:30am · Google reports ~2 days behind`));
+  }
+
+  /* 2 — visitors */
+  {
+    const days = standVisDays();
+    const complete = days.filter(x => !x.partial);
+    const lastC = complete.length ? complete[complete.length-1] : null;
+    const today = days.find(x => x.partial);
+    const pv = days.map(x => ({d:x.date, v:x.partial ? null : x.page_views}));
+    const now7 = sumWindow(days.map(x=>({d:x.date,v:x.page_views,partial:x.partial})), 3, 0),
+          prev7 = null; /* coverage began 2026-08-22 — the week-over-week comparison starts when two full weeks exist */
+    const body = lastC ? `
+      <div class="big">${FMT(lastC.page_views)} <small>page views · ${esc(lastC.date)}</small></div>
+      <div class="second">${FMT(lastC.unique_ips)} distinct visitors (unique IPs) that day${today ? ` · today so far: ${FMT(today.page_views)} views` : ""}</div>
+      ${sparkSVG(pv)}
+      <span class="delta flat">daily series since 2026-08-22 (when edge logging began)</span>` :
+      `<div class="second">Visitor logs have not been processed for this view yet.</div>`;
+    tiles.push(tile("Visitors — the sites", body,
+      `<span class="chip measured">measured</span> the estate's own edge logs, first party — no tracking tag · bots excluded · an IP is not exactly a person`));
+  }
+
+  /* 3 — patient interest (conversion signals) */
+  {
+    const days = standVisDays();
+    const complete = days.filter(x => !x.partial);
+    const lastC = complete.length ? complete[complete.length-1] : null;
+    const today = days.find(x => x.partial);
+    const intent = days.map(x => ({d:x.date, v:x.partial ? null : x.booking_intent_views}));
+    const assistTotal = complete.reduce((a,x)=>a+x.assist_posts,0);
+    const body = lastC ? `
+      <div class="big">${FMT(lastC.booking_intent_views)} <small>pricing/contact page visits · ${esc(lastC.date)}</small></div>
+      <div class="second">${FMT(lastC.assist_posts)} assistant conversations that day · ${FMT(assistTotal)} since logging began${today ? ` · today so far: ${FMT(today.booking_intent_views)}` : ""}</div>
+      ${sparkSVG(intent, {color:"#2FA84F"})}
+      <div class="conn" style="margin-top:6px">
+        <span class="cchip"><span class="dot wait"></span>phone calls — needs tracking numbers (Twilio, on the owner list)</span>
+        <span class="cchip"><span class="dot wait"></span>Google calls &amp; directions — connect Google below</span>
+      </div>` :
+      `<div class="second">No processed days yet.</div>`;
+    tiles.push(tile("Patient interest", body,
+      `<span class="chip measured">measured</span> booking-intent page visits + assistant conversations, from the same edge logs · what is not yet tracked says so`));
+  }
+
+  /* 4 — priorities */
+  {
+    const p = FEED.priorities || {items:[]};
+    const top = (p.items || []).slice(0, 4);
+    const body = `<div class="rows">${top.map(i => `
+      <div><span class="chip ${i.who === "owner" ? "p1" : "p2"}">#${i.rank} ${esc(i.who)}</span>
+        <span class="what"> ${esc(i.what)}</span>
+        <span style="color:var(--muted)"> · ${esc(i.effort)}</span></div>`).join("")}</div>`;
+    tiles.push(tile("Next priorities", body,
+      `${esc(String((p.items||[]).length))} ranked items · as of ${esc(p.captured_at || "—")} · <a href="#" id="pri-more">see all, with reasons</a>`));
+  }
+
+  /* 5 — local grid */
+  {
+    const g = FEED.geogrid || {};
+    const scans = g.scans || [];
+    let body;
+    if(scans.length){
+      const arps = scans.map(x => x.arp).filter(v => v != null);
+      const avg = arps.length ? (arps.reduce((a,v)=>a+v,0)/arps.length) : null;
+      body = `
+        <div class="big">${avg != null ? avg.toFixed(1) : "—"} <small>avg map position, where measured</small></div>
+        <div class="second">${scans.map(x => `${esc(x.keyword)}: <b>${x.arp != null ? "#" + x.arp.toFixed(1) : "—"}</b> (${esc(x.top3 || "—")})`).join(" · ")}</div>
+        <div class="second">Scan ${esc(scans[0].date)} · ${scans[0].n}×${scans[0].n} grid across Tulsa · <a href="/command/map/">open the live map</a></div>`;
+    } else {
+      body = `<div class="second">${esc(g.note || "No scan yet — a gap is not a zero.")}</div>`;
+    }
+    tiles.push(tile("Local map presence (TSA)", body,
+      `<span class="chip measured">measured</span> geo-grid scan through DataForSEO · re-scans Mondays 6:15am · unmeasured points stay unmeasured`));
+  }
+
+  /* 6 — content engine */
+  {
+    const slugs = TENANT === "estate" ? CAMPUSES : [TENANT];
+    let done = 0, total = 0, lastTl = null, stamp = null;
+    for(const sl of slugs){
+      const iv = engTable(sl, "interventions");
+      total += iv.length;
+      done += iv.filter(r => String(r.status||"").toLowerCase().includes("complete")).length;
+      const tl = engTable(sl, "timeline");
+      for(const r of tl) if(r.date && (!lastTl || r.date > lastTl.date)) lastTl = r;
+      const st = (engineOf(sl) || {}).export_stamp;
+      if(st && st.generated_at && (!stamp || st.generated_at > stamp)) stamp = st.generated_at;
+    }
+    if(TENANT === "estate" && ENGINE && ENGINE.unattributed && ENGINE.unattributed.interventions){
+      /* pre-tenancy ledger rows carry no tenant_id — they render at the
+         estate level and are attributed to no practice (the exporter's law) */
+      const shared = ENGINE.unattributed.interventions.rows || [];
+      total += shared.length;
+      done += shared.filter(r => String(r.status||"").toLowerCase().includes("complete")).length;
+    }
+    const studio = FEED.content_studio || {};
+    const nSug = (studio.suggestions || []).length;
+    const body = `
+      <div class="big">${FMT(done)}<small> of ${FMT(total)} interventions completed</small></div>
+      <div class="second">${lastTl ? `Latest: ${esc(lastTl.date)} — ${esc(lastTl.summary || lastTl.id || "")}` : "No timeline rows for this view."}</div>
+      <div class="second">${nSug} evidence-cited content suggestions ready in the studio${(studio.demand_deltas||{}).state === "awaiting_credential" ? " · demand deltas unlock with Semrush units" : ""}</div>`;
+    tiles.push(tile("Content engine", body,
+      `engine data as of ${stamp ? esc(String(stamp)) : "—"} · every intervention is ledgered with predicted vs observed`));
+  }
+
+  host.innerHTML = tiles.join("");
+  const more = $("#pri-more");
+  if(more) more.addEventListener("click", e => { e.preventDefault(); setView(false); $("#s-pri").scrollIntoView({behavior:"smooth"}); });
+}
+
+/* ---------- connections strip (social OAuth broker) ---------- */
+let CONN_CACHE = {at: 0, rows: null, tenant: null};
+function renderConnections(){
+  const host = $("#stand-conn"); if(!host) return;
+  const slug = TENANT === "estate" ? "tsa-cuzalina" : TENANT;
+  const token = tokenFor(slug);
+  if(!CONFIG.conciergeApi || !token){
+    host.innerHTML = `<div class="conn">
+      <span class="cchip"><span class="dot off"></span>Platform connections (Instagram/Facebook · TikTok · Google · LinkedIn · X) — sign in with your access card to see and connect</span></div>`;
+    return;
+  }
+  /* Console law: page load stays zero-request — the person ACTS, then we
+     talk to the concierge. A fresh check is cached for the render cycle. */
+  const fresh = CONN_CACHE.rows && CONN_CACHE.tenant === slug && (Date.now() - CONN_CACHE.at) < 5*60*1000;
+  if(fresh){ paintConnections(CONN_CACHE.rows); return; }
+  host.innerHTML = `<div class="conn">
+    <span class="cchip"><span class="dot off"></span>Platform connections (Instagram/Facebook · TikTok · Google · LinkedIn · X)</span>
+    <button class="connect" id="conn-check">check status</button></div>`;
+  const btn = $("#conn-check");
+  if(btn) btn.addEventListener("click", () => {
+    btn.disabled = true; btn.textContent = "checking…";
+    fetch(CONFIG.conciergeApi.replace(/\/$/, "") + "/v1/concierge/social/providers",
+          {headers:{Authorization:"Bearer " + tokenFor(slug)}})
+      .then(r => r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)))
+      .then(doc => { CONN_CACHE = {at: Date.now(), rows: doc.providers || [], tenant: slug}; paintConnections(CONN_CACHE.rows); })
+      .catch(e => { host.innerHTML = `<div class="conn"><span class="cchip"><span class="dot off"></span>connections unavailable right now (${esc(e.message)})</span></div>`; });
+  });
+}
+function paintConnections(rows){
+  const host = $("#stand-conn"); if(!host) return;
+  host.innerHTML = `<div class="conn">` + rows.map(r => {
+    if(r.provider === "atlas-demo") return "";
+    const st = r.state;
+    const dot = st === "connected" ? "ok" : st === "ready_to_connect" ? "wait" : "off";
+    const label = st === "connected" ? `connected${r.connected_at ? " " + esc(String(r.connected_at).slice(0,10)) : ""}` :
+                  st === "ready_to_connect" ? `<button class="connect" data-provider="${esc(r.provider)}">Connect</button>` :
+                  "needs the platform app (owner list #3)";
+    return `<span class="cchip"><span class="dot ${dot}"></span>${esc(r.label)} — ${label}</span>`;
+  }).join("") + `</div>`;
+  host.querySelectorAll("button.connect").forEach(b => b.addEventListener("click", async () => {
+    b.disabled = true; b.textContent = "opening…";
+    try{
+      const slug = TENANT === "estate" ? "tsa-cuzalina" : TENANT;
+      const r = await fetch(CONFIG.conciergeApi.replace(/\/$/, "") +
+        "/v1/concierge/social/connect?provider=" + encodeURIComponent(b.dataset.provider),
+        {headers:{Authorization:"Bearer " + tokenFor(slug)}});
+      const doc = await r.json();
+      if(r.ok && doc.authorize_url){ window.open(doc.authorize_url, "_blank", "noopener"); b.textContent = "finish in the new tab"; }
+      else { b.textContent = doc.detail || doc.error || "refused"; }
+    }catch(e){ b.textContent = "failed — retry"; b.disabled = false; }
+  }));
+}
+
+/* ---------- simple/detail toggle ---------- */
+function setView(simple){
+  document.body.classList.toggle("simple", simple);
+  const b = $("#view-toggle");
+  if(b) b.textContent = simple ? "FULL DETAIL" : "SIMPLE VIEW";
+  try{ localStorage.setItem("atlas.view", simple ? "simple" : "detail"); }catch(_){}
+}
+(function(){
+  let pref = "simple";
+  try{ pref = localStorage.getItem("atlas.view") || "simple"; }catch(_){}
+  setView(pref !== "detail");
+  const b = $("#view-toggle");
+  if(b) b.addEventListener("click", () => setView(!document.body.classList.contains("simple")));
+})();
 
 captureLink();
 restoreSession();
