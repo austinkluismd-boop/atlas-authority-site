@@ -770,12 +770,15 @@ function sessionExpiryOf(k){
   return Math.max(...Object.values(k.keys).map(keyExp));
 }
 function captureLink(){
-  const m = /(?:^|[#&])atlas=([A-Za-z0-9_-]+)/.exec(location.hash || "");
+  /* Fragment OR query: iPhone/iMessage taps drop fragments (measured 2026-08-26),
+     so minted cards now ride ?atlas= — both forms are honored here. */
+  const m = /(?:^|[#&])atlas=([A-Za-z0-9_-]+)/.exec(location.hash || "")
+         || /(?:^|[?&])atlas=([A-Za-z0-9_-]+)/.exec(location.search || "");
   if(!m) return;
   adoptBlob(m[1]);
   /* strip the keyring out of the address bar: it must not sit in history,
      a screenshot, or a shoulder-surf. */
-  history.replaceState(null, "", location.pathname + location.search);
+  history.replaceState(null, "", location.pathname);
 }
 /* Following your link while the console is ALREADY open changes only the
    fragment — the browser does not reload, so nothing would have run. Found
